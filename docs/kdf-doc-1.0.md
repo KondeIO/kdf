@@ -18,7 +18,7 @@ KDF does for design consistency what i18n does for translation consistency.
 
 KDF moves page and component styling out of scattered JSX and into JSON files that humans and agents can both read. The user controls the design by editing JSON. The agent implements UI by reading JSON instead of guessing spacing, colors, typography, and layout.
 
-KDF is not a component library and not a CSS engine. It is a design coordination layer over normal CSS, Tailwind, Bootstrap, shadcn, or any other class-based styling system.
+KDF is not a component library and not a CSS engine. It is a design coordination layer over normal CSS, CSS modules, utility CSS, Bootstrap, shadcn, or any other class-based styling system.
 
 ## README vs This Document
 
@@ -180,18 +180,18 @@ export default withKDF({ dir: "./my-design" })(nextConfig);
 
 Absolute design directory is supported through `KDF_DIR` and resolver options in the current implementation.
 
-## Tailwind Setup
+## CSS Framework Scanning
 
-Tailwind must scan KDF JSON files, otherwise class names stored in JSON may not be generated.
+If your styling framework generates CSS by scanning source files, make sure it scans KDF JSON files too. Otherwise class names stored in JSON may not be generated.
 
-Tailwind v4:
+Example for Tailwind v4:
 
 ```css
 @import "tailwindcss";
 @source "../kdf/**/*.json";
 ```
 
-Tailwind v3:
+Example for Tailwind v3:
 
 ```ts
 export default {
@@ -428,17 +428,16 @@ className={cn(d("button.base"), isActive && d("button.active"), className)}
 ```
 
 `cn` is built on `clsx` only — it stays UI-library agnostic and does not bundle
-a Tailwind-specific dependency.
+a CSS-framework-specific dependency.
 
-It joins class values and filters falsy ones. It does **not** resolve Tailwind
-conflicts. If you use Tailwind and want later classes to win over conflicting
-earlier ones (e.g. keep the later `bg-*`), wrap `cn` with `tailwind-merge` in
-your own app:
+It joins class values and filters falsy ones. It does **not** resolve
+framework-specific class conflicts. If your app needs that behavior, wrap KDF's
+`cn` with your own framework-specific merge helper:
 
 ```ts
 import { cn as kcn } from "@kondeio/kdf";
-import { twMerge } from "tailwind-merge";
-export const cn = (...a: unknown[]) => twMerge(kcn(...(a as any[])));
+import { mergeFrameworkClasses } from "your-framework-merge";
+export const cn = (...a: unknown[]) => mergeFrameworkClasses(kcn(...(a as any[])));
 ```
 
 ## Cache Behavior
@@ -486,14 +485,14 @@ The package depends on:
 ```
 
 `clsx` must remain a real dependency (not peer-only) because `cn()` uses it at
-runtime. KDF intentionally does **not** depend on `tailwind-merge` or
-`tailwindcss` — Tailwind conflict-resolution is opt-in per consumer.
+runtime. KDF intentionally does **not** depend on framework-specific class merge
+packages. Conflict resolution is opt-in per consumer.
 
 ## UI Library Compatibility
 
 KDF is UI-library agnostic because it stores classes and metadata, not component implementations.
 
-shadcn + Tailwind:
+shadcn:
 
 ```json
 {

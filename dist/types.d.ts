@@ -2,7 +2,7 @@
 export type DesignTokenValue = string | {
     /** Component binding — WHAT to render: "Button", "h1", "Image" */
     $?: string;
-    /** Tailwind/CSS classes. Supports @refs: "@button.cta shadow-xl" */
+    /** CSS class string. Supports @refs: "@button.cta shadow-xl" */
     className?: string;
     /** CSS custom properties generated into konde.css */
     css?: Record<string, string>;

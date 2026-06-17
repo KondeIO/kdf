@@ -35,13 +35,13 @@ import { getDesign, cn } from "@kondeio/kdf";
 const d = getDesign("homepage");
 ```
 
-5. Confirm Tailwind scans KDF JSON if Tailwind is used:
+5. Confirm the styling framework scans KDF JSON if it generates CSS by scanning source files:
 
 ```css
 @source "../kdf/**/*.json";
 ```
 
-or equivalent Tailwind v3 content config.
+or equivalent framework/source scanning config.
 
 ## Non-negotiable Rules
 
@@ -126,7 +126,7 @@ Use `cn()` when combining KDF tokens with conditional classes or caller-provided
 className={cn(d("button.base"), active && d("button.active"), className)}
 ```
 
-Do not concatenate class strings manually when Tailwind conflicts may occur.
+Do not concatenate class strings manually when conditional classes can drift or duplicate. Use `cn()` for predictable class composition.
 
 ### 6. Resolve Design Server-Side
 
@@ -304,7 +304,7 @@ Use this checklist before finishing KDF-related UI work.
 - [ ] One-off page styles live in `kdf/<page>.json`.
 - [ ] Conditional class merging uses `cn()`.
 - [ ] CSS custom properties use `d.css(path)`.
-- [ ] Tailwind scans KDF JSON files if Tailwind is used.
+- [ ] The app's styling framework scans KDF JSON files when required.
 - [ ] No large design class strings are hardcoded in JSX when a token should exist.
 - [ ] `$layout` is respected if the page uses section ordering.
 
@@ -315,7 +315,7 @@ Use this when reviewing code written by another agent.
 - [ ] No `@kondeio/kdf` imports remain; use `@kondeio/kdf`.
 - [ ] No element uses `d("...")` without `data-kdf`.
 - [ ] `data-kdf` values match the token paths exactly.
-- [ ] No design drift through arbitrary inline Tailwind classes.
+- [ ] No design drift through arbitrary inline styling classes.
 - [ ] KDF JSON remains valid JSON.
 - [ ] Shared refs point to existing shared token files.
 - [ ] `@` refs are not used for business logic.

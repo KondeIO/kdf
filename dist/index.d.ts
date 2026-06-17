@@ -18,15 +18,14 @@ export declare function getDesign(page: string, options?: GetDesignOptions): Des
  *   <div className={cn(d("base"), isActive && d("active"), className)} />
  *
  * - Joins class values and filters falsy ones (undefined / false / null).
- * - Does NOT resolve Tailwind conflicts — KDF stays styling-system agnostic
- *   and does not bundle a Tailwind-specific dependency.
+ * - Does NOT resolve framework-specific class conflicts — KDF stays
+ *   styling-system agnostic and does not bundle a CSS-framework dependency.
  *
- * If you use Tailwind and want later classes to win over conflicting earlier
- * ones (e.g. `bg-red-500` then `bg-blue-500`), wrap `cn` with `tailwind-merge`
- * in your own app:
+ * If your app uses a styling framework that needs conflict resolution, wrap
+ * `cn` with your framework-specific merge helper in your own app:
  *
  *   import { cn as kcn } from "@kondeio/kdf";
- *   import { twMerge } from "tailwind-merge";
- *   export const cn = (...a: unknown[]) => twMerge(kcn(...(a as ClassValue[])));
+ *   import { mergeFrameworkClasses } from "your-framework-merge";
+ *   export const cn = (...a: unknown[]) => mergeFrameworkClasses(kcn(...(a as ClassValue[])));
  */
 export declare function cn(...inputs: ClassValue[]): string;

@@ -6,9 +6,9 @@ All notable changes to KDF are documented here. Format loosely follows
 ## [Unreleased]
 
 ### Changed
-- **`cn()` is now `clsx`-only.** Removed the `tailwind-merge` runtime dependency
-  to keep the core UI-library agnostic. Consumers who want Tailwind conflict
-  resolution wrap `cn()` with `tailwind-merge` in their own app (see README).
+- **`cn()` is now `clsx`-only.** Removed the framework-specific class merge
+  runtime dependency to keep the core UI-library agnostic. Consumers who need
+  conflict resolution should wrap `cn()` with their own app-level merge utility.
 - Package scope renamed `@konde/kdf` → `@kondeio/kdf`.
 - `package.json` description broadened: framework-agnostic core, first-class
   Next.js plugin.

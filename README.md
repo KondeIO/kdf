@@ -2,14 +2,37 @@
 
 Design-as-JSON. Works like i18n: one page maps to one JSON file.
 
+KDF solves design drift in codebases where UI styling is scattered across
+components, pages, and agent-generated changes. Instead of asking humans or AI
+agents to repeatedly guess "make this bigger", "use the same spacing", or "match
+the other page", KDF puts design decisions in JSON so every element can point to
+a stable design key.
+
+KDF is **user-first**: the user owns the design source of truth and can edit it
+directly. It is also **agent-readable**: agents can inspect the same JSON and
+apply the design without improvising. The goal is not to let agents design for
+the user; the goal is to stop agents from guessing.
+
 ## Why
 
-Styling drifts when class names live scattered across `.tsx` files — humans and
-agents both guess, and every page ends up slightly different. KDF moves design
-into JSON that both can read and edit: the user owns the design, the agent reads
-it instead of guessing, and `data-kdf` maps every element back to its exact JSON
-path. It is a coordination layer over your existing CSS/Tailwind/shadcn — not a
-component library or CSS engine.
+Styling drifts when class names live scattered across `.tsx` files:
+
+- the same button slowly gets five different variants
+- spacing changes page by page
+- colors and typography become inconsistent
+- every new AI session has to rediscover the design rules
+- users spend time correcting visual guesses through chat
+
+KDF moves the repeatable design layer into JSON:
+
+- users can edit design tokens directly
+- agents read tokens instead of inventing styles
+- `data-kdf` maps every DOM element back to its exact JSON path
+- the same design key can be scanned, tested, reviewed, and edited later
+
+KDF is a coordination layer over your existing styling stack: plain CSS, CSS
+modules, utility CSS, Bootstrap, shadcn, or your own design system. It is not a
+component library and not a CSS engine.
 
 ## Install
 
@@ -46,6 +69,43 @@ kdf/
   pricing.json         <- pricing page overrides
 ```
 
+Example app structure:
+
+```
+my-app/
+  app/
+    page.tsx
+    pricing/page.tsx
+  components/
+    hero.tsx
+    pricing-table.tsx
+  kdf/
+    shared/
+      button.json
+      card.json
+      color.json
+      layout.json
+      typography.json
+    homepage.json
+    pricing.json
+    konde-server.css
+    konde.css
+  next.config.ts
+```
+
+Example token shape:
+
+```json
+{
+  "$layout": ["hero", "features", "footer"],
+  "hero": {
+    "wrapper": "mx-auto max-w-6xl px-6 py-20",
+    "title": "@typography.h1",
+    "cta": "@button.cta"
+  }
+}
+```
+
 ## Usage
 
 ```tsx
@@ -56,6 +116,38 @@ const d = getDesign("homepage");
 <h1 data-kdf="hero.title" className={d("hero.title")}>
   {t("hero.headline")}
 </h1>
+```
+
+## `cn()`
+
+KDF exports a small `cn()` helper for composing conditional classes. It is
+`clsx`-only by design, so it stays UI-library agnostic and does not assume any
+framework-specific class conflict rules.
+
+```tsx
+import { cn, getDesign } from "@kondeio/kdf";
+
+const d = getDesign("homepage");
+
+<button
+  data-kdf="hero.cta"
+  className={cn(d("hero.cta"), isActive && d("hero.cta-active"), className)}
+>
+  Start
+</button>
+```
+
+If your app uses a styling framework that needs its own class conflict
+resolution, wrap KDF's `cn()` in your app-level utility instead of adding that
+framework rule to KDF core:
+
+```ts
+import { cn as kcn } from "@kondeio/kdf";
+import { mergeFrameworkClasses } from "your-framework-merge";
+
+export function cn(...inputs: Parameters<typeof kcn>) {
+  return mergeFrameworkClasses(kcn(...inputs));
+}
 ```
 
 ## Server-only
@@ -118,7 +210,7 @@ Use `clearKdfCache()` for explicit invalidation in custom tooling.
 
 ## CSS custom properties
 
-For values not expressible in Tailwind:
+For values not expressible as reusable classes:
 
 ```json
 {
