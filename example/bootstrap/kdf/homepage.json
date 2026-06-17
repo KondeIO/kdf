@@ -1,0 +1,35 @@
+{
+  "hero": {
+    "wrapper": "row align-items-center g-5",
+    "content": "col-lg-6",
+    "title": {
+      "className": "@typography.h1",
+      "css": {
+        "color": "orange",
+        "font-size": "3.5rem",
+        "--kdf-title-accent": "blue"
+      }
+    },
+    "description": {
+      "className": "mt-3 @typography.body",
+      "css": { "color": "#6c757d" }
+    },
+    "actions": "mt-4 d-flex gap-3",
+    "cta-primary": "@button.base @button.cta @button.lg",
+    "cta-secondary": "@button.base @button.outline",
+    "slider": "col-lg-6"
+  },
+  "template-grid": {
+    "wrapper": "row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 mt-5",
+    "card": "@card.base @card.hover",
+    "card-image": "card-img-top",
+    "card-body": "card-body",
+    "card-title": "card-title fw-medium fs-6",
+    "card-category": "@typography.small"
+  },
+  "pagination": {
+    "wrapper": "mt-4 d-flex justify-content-center gap-2",
+    "button": "@button.base @button.ghost @button.sm",
+    "active": "@button.base @button.primary @button.sm"
+  }
+}

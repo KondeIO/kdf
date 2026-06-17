@@ -1,0 +1,5 @@
+/* Tailwind CSS — via CDN or build */
+/* CDN (dev only): add <script src="https://cdn.tailwindcss.com"></script> to HTML */
+/* Build (production): @tailwind base; @tailwind components; @tailwind utilities; */
+
+/* konde.css is loaded automatically as last <link> in <head> by withKDF() plugin */

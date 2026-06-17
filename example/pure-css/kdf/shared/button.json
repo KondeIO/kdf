@@ -1,0 +1,10 @@
+{
+  "base": "kdf-btn",
+  "primary": "kdf-btn--primary",
+  "outline": "kdf-btn--outline",
+  "ghost": "kdf-btn--ghost",
+  "cta": "kdf-btn--primary",
+  "sm": "",
+  "md": "",
+  "lg": "kdf-btn--lg"
+}

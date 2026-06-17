@@ -1,0 +1,30 @@
+{
+  "hero": {
+    "wrapper": "max-w-3xl",
+    "title": "@typography.h1",
+    "description": "mt-4 @typography.body max-w-xl"
+  },
+  "story": {
+    "wrapper": "mt-16",
+    "title": "@typography.h2",
+    "content": "mt-4 @typography.body max-w-2xl",
+    "image": "mt-8 w-full rounded-lg object-cover aspect-video"
+  },
+  "team": {
+    "wrapper": "mt-16",
+    "title": "@typography.h2",
+    "grid": "mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3",
+    "card": "@card.base p-6 text-center",
+    "avatar": "mx-auto size-20 rounded-full object-cover",
+    "name": "mt-4 font-medium text-gray-900",
+    "role": "@typography.muted"
+  },
+  "values": {
+    "wrapper": "mt-16",
+    "title": "@typography.h2",
+    "grid": "mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2",
+    "card": "@card.base p-6",
+    "card-title": "@typography.h3",
+    "card-description": "mt-2 @typography.body"
+  }
+}

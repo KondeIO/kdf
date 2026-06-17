@@ -1,0 +1,73 @@
+{
+  "name": "@kondeio/kdf",
+  "version": "0.1.0",
+  "description": "Konde Design Framework — JSON-based design system for Next.js",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "@kondeio/kdf": "dist/cli.js",
+    "kdf": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./plugin": {
+      "import": "./dist/plugin.js",
+      "types": "./dist/plugin.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "kdf",
+    "example"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "node dist/postinstall.js",
+    "typecheck": "tsc --noEmit",
+    "test": "bun unit-test.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KondeIO/kdf.git"
+  },
+  "homepage": "https://github.com/KondeIO/kdf#readme",
+  "bugs": {
+    "url": "https://github.com/KondeIO/kdf/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4"
+  },
+  "peerDependencies": {
+    "next": ">=14"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.0.0",
+    "typescript": "^6.0.2"
+  },
+  "keywords": [
+    "design-system",
+    "json",
+    "nextjs",
+    "tailwind",
+    "design-tokens"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "header": "sticky-top bg-white border-bottom py-2 px-4",
+  "sidebar": "position-fixed top-0 start-0 vh-100 bg-white border-end d-none d-lg-block",
+  "content": "flex-grow-1 p-4",
+  "main": "d-flex flex-column",
+  "footer": "border-top py-4 px-4"
+}

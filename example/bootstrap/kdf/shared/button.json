@@ -1,0 +1,10 @@
+{
+  "base": "btn",
+  "primary": "btn-primary",
+  "outline": "btn-outline-secondary",
+  "ghost": "btn-link text-decoration-none",
+  "cta": "btn-primary shadow",
+  "sm": "btn-sm",
+  "md": "",
+  "lg": "btn-lg"
+}

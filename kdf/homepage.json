@@ -1,0 +1,25 @@
+{
+  "hero": {
+    "wrapper": "flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between",
+    "content": "w-full lg:max-w-[500px]",
+    "title": "@typography.h1",
+    "description": "mt-4 @typography.body",
+    "actions": "mt-6 flex gap-3",
+    "cta-primary": "@button.base @button.cta @button.md",
+    "cta-secondary": "@button.base @button.outline @button.md",
+    "slider": "w-full lg:max-w-[500px]"
+  },
+  "template-grid": {
+    "wrapper": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10",
+    "card": "@card.base @card.hover",
+    "card-image": "aspect-video w-full object-cover",
+    "card-body": "p-4",
+    "card-title": "font-medium text-gray-900 text-sm",
+    "card-category": "@typography.small"
+  },
+  "pagination": {
+    "wrapper": "mt-8 flex justify-center gap-2",
+    "button": "@button.base @button.ghost @button.sm",
+    "active": "@button.base @button.primary @button.sm"
+  }
+}

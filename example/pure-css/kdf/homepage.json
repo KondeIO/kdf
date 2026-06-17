@@ -1,0 +1,20 @@
+{
+  "hero": {
+    "wrapper": "kdf-hero",
+    "content": "kdf-hero__content",
+    "title": "@typography.h1",
+    "description": "kdf-hero__desc @typography.body",
+    "actions": "kdf-hero__actions",
+    "cta-primary": "@button.base @button.cta @button.lg",
+    "cta-secondary": "@button.base @button.outline",
+    "slider": "kdf-hero__slider"
+  },
+  "template-grid": {
+    "wrapper": "kdf-grid",
+    "card": "@card.base @card.hover",
+    "card-image": "kdf-card__img",
+    "card-body": "kdf-card__body",
+    "card-title": "kdf-card__title",
+    "card-category": "@typography.muted"
+  }
+}

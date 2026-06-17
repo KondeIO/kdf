@@ -1,0 +1,15 @@
+/* Tailwind CSS + shadcn/ui theme */
+/* CDN (dev only): add <script src="https://cdn.tailwindcss.com"></script> to HTML */
+/* Build (production): @tailwind base; @tailwind components; @tailwind utilities; */
+
+/* shadcn theme variables — these come from shadcn init */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+  }
+}
+
+/* konde.css is loaded automatically as last <link> in <head> by withKDF() plugin */

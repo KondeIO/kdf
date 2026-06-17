@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "wrapper": "text-center max-w-3xl mx-auto",
+    "title": "@typography.h1",
+    "description": "mt-4 @typography.body max-w-xl mx-auto"
+  },
+  "plans": {
+    "wrapper": "mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3",
+    "card": "@card.base p-6",
+    "card-featured": "@card.base p-6 border-blue-600 ring-1 ring-blue-600",
+    "badge": "inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700",
+    "plan-name": "@typography.h3",
+    "price": "mt-4 text-4xl font-bold tracking-tight text-gray-900",
+    "period": "text-sm font-normal text-gray-500",
+    "description": "mt-2 @typography.muted",
+    "features": "mt-6 space-y-3",
+    "feature-item": "flex items-start gap-2 text-sm text-gray-600",
+    "cta": "@button.base @button.primary @button.md w-full justify-center",
+    "cta-featured": "@button.base @button.cta @button.md w-full justify-center"
+  },
+  "faq": {
+    "wrapper": "mt-16 max-w-2xl mx-auto",
+    "title": "@typography.h2 text-center",
+    "list": "mt-8 space-y-4",
+    "question": "font-medium text-gray-900",
+    "answer": "mt-1 @typography.body"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "primary": {
+    "css": { "--kdf-primary": "#4F46E5" }
+  },
+  "danger": {
+    "css": { "--kdf-danger": "#DC2626" }
+  },
+  "success": {
+    "css": { "--kdf-success": "#16A34A" }
+  }
+}

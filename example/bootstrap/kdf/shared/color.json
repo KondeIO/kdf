@@ -1,0 +1,17 @@
+{
+  "primary": {
+    "css": { "--kdf-primary": "red" }
+  },
+  "danger": {
+    "css": { "--kdf-danger": "#dc3545" }
+  },
+  "success": {
+    "css": { "--kdf-success": "#198754" }
+  },
+  "warning": {
+    "css": { "--kdf-warning": "#ffc107" }
+  },
+  "accent": {
+    "css": { "--kdf-accent": "#fd7e14" }
+  }
+}

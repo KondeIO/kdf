@@ -1,0 +1,34 @@
+/* Plain CSS — class definitions for KDF tokens */
+
+/* Layout */
+.kdf-hero { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; }
+.kdf-hero__content { flex: 1; min-width: 300px; }
+.kdf-hero__desc { margin-top: 1rem; }
+.kdf-hero__actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; }
+.kdf-hero__slider { flex: 1; min-width: 300px; }
+.kdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+
+/* Typography */
+.kdf-h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; color: #111827; margin: 0; }
+.kdf-h2 { font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0; }
+.kdf-h3 { font-size: 1.25rem; font-weight: 600; color: #111827; margin: 0; }
+.kdf-body { font-size: 1rem; line-height: 1.6; color: #6b7280; }
+.kdf-muted { font-size: 0.875rem; color: #9ca3af; }
+
+/* Buttons */
+.kdf-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 500; font-size: 0.875rem; border: none; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+.kdf-btn--primary { background: #4F46E5; color: white; }
+.kdf-btn--primary:hover { background: #4338CA; }
+.kdf-btn--outline { background: transparent; border: 1px solid #d1d5db; color: #374151; }
+.kdf-btn--outline:hover { background: #f3f4f6; }
+.kdf-btn--ghost { background: transparent; color: #6b7280; }
+.kdf-btn--ghost:hover { background: #f3f4f6; color: #111827; }
+.kdf-btn--lg { padding: 0.75rem 1.5rem; font-size: 1rem; }
+
+/* Cards */
+.kdf-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+.kdf-card--hover { transition: box-shadow 0.2s; }
+.kdf-card--hover:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.kdf-card__img { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #f3f4f6; }
+.kdf-card__body { padding: 1rem; }
+.kdf-card__title { font-weight: 500; color: #111827; font-size: 0.875rem; }
