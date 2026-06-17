@@ -55,4 +55,3 @@ if (!command || !commands[command]) {
     process.exit(command ? 1 : 0);
 }
 commands[command]();
-//# sourceMappingURL=cli.js.map

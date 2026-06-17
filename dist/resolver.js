@@ -98,6 +98,15 @@ function resolveSingleRef(ref, pageTokens, depth, options) {
     const dotIdx = refPart.indexOf(".");
     const component = dotIdx > 0 ? refPart.slice(0, dotIdx) : refPart;
     const key = dotIdx > 0 ? refPart.slice(dotIdx + 1) : "";
+    // Reject path-traversal in the component name: it becomes part of a file path
+    // (shared/<component>.json). A ref like "@../../secret.x" must never escape the
+    // shared/ folder. Allow only safe filename chars.
+    if (!/^[A-Za-z0-9_-]+$/.test(component)) {
+        if (process.env.NODE_ENV !== "production") {
+            console.warn(`[kdf] ignoring unsafe @ref component: "${component}"`);
+        }
+        return "";
+    }
     // Load shared/<component>.json — cascade: template shared → root shared
     let resolved = undefined;
     // 1. Template-specific shared (e.g., designs/lander/shared/button.json)
@@ -173,4 +182,3 @@ export function resolveCSS(path, pageTokens) {
     return {};
 }
 export { loadFile, getKdfRoot };
-//# sourceMappingURL=resolver.js.map

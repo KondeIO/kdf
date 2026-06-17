@@ -1,12 +1,15 @@
 import { existsSync } from "fs";
 import { join } from "path";
 /**
- * Next.js plugin for @konde/kdf.
+ * Next.js plugin for @kondeio/kdf.
  *
  * Single config — everything follows from `dir`:
  *   - JSON tokens: <dir>/shared/, <dir>/homepage.json
  *   - konde-server.css: <dir>/konde-server.css (import in layout.tsx)
- *   - konde.css: <dir>/konde.css (auto-injected last in <head>)
+ *   - konde.css: <dir>/konde.css
+ *
+ * The plugin only exposes paths via env (KDF_DIR, KDF_SERVER_CSS,
+ * KDF_CLIENT_CSS). It does NOT inject CSS — wire the <link>/import in your app.
  *
  * Usage:
  *   export default withKDF()(nextConfig);                        // default: ./kdf
@@ -35,4 +38,3 @@ export default function withKDF(options) {
         };
     };
 }
-//# sourceMappingURL=plugin.js.map

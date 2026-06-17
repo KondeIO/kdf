@@ -46,4 +46,3 @@ console.log("    shared/            ← design tokens");
 console.log("    homepage.json");
 console.log("    konde-server.css   ← critical overrides (import in layout.tsx)");
 console.log("    konde.css          ← non-critical overrides (auto-injected last)");
-//# sourceMappingURL=postinstall.js.map

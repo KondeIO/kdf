@@ -9,4 +9,3 @@ export declare function resolveClassName(path: string, pageTokens: DesignTokenFi
 /** Resolve CSS custom properties for a token path */
 export declare function resolveCSS(path: string, pageTokens: DesignTokenFile | null): Record<string, string>;
 export { loadFile, getKdfRoot };
-//# sourceMappingURL=resolver.d.ts.map

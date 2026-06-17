@@ -1,4 +1,4 @@
-import { getDesign } from "@konde/kdf";
+import { getDesign } from "@kondeio/kdf";
 
 export function HeroSection() {
   const d = getDesign("homepage");

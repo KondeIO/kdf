@@ -1,4 +1,4 @@
-import { getDesign } from "@konde/kdf";
+import { getDesign } from "@kondeio/kdf";
 import { Button } from "@/components/ui/button";
 
 export function HeroSection() {

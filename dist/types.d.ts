@@ -42,4 +42,3 @@ export interface GetDesignOptions {
      */
     maxAgeMs?: number;
 }
-//# sourceMappingURL=types.d.ts.map

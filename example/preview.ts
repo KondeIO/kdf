@@ -307,7 +307,7 @@ function renderAllPages(): string {
     </section>
 
     <div class="kdf-footer">
-      @konde/kdf v0.1.0 — ${FRAMEWORK} — all styles resolved from kdf/*.json via getDesign()
+      @kondeio/kdf v0.1.0 — ${FRAMEWORK} — all styles resolved from kdf/*.json via getDesign()
     </div>
   </div>
 </body>

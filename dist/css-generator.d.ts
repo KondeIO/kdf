@@ -15,4 +15,3 @@ export declare function generateKondeCSS(): string;
  * Safe to call multiple times; never overwrites user edits.
  */
 export declare function writeKondeCSS(outputDir?: string): void;
-//# sourceMappingURL=css-generator.d.ts.map

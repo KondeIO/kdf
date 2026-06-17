@@ -1,7 +1,7 @@
 {
   "name": "@kondeio/kdf",
   "version": "0.1.0",
-  "description": "Konde Design Framework — JSON-based design system for Next.js",
+  "description": "Konde Design Framework — JSON-based design system. Framework-agnostic core (server-side fs); first-class Next.js plugin.",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
@@ -22,8 +22,12 @@
   },
   "files": [
     "dist",
+    "docs",
     "kdf",
-    "example"
+    "example",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc",
@@ -47,8 +51,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^2.5.4"
+    "clsx": "^2.1.1"
   },
   "peerDependencies": {
     "next": ">=14"

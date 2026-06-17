@@ -13,18 +13,20 @@ export { clearKdfCache } from "./resolver.js";
  */
 export declare function getDesign(page: string, options?: GetDesignOptions): DesignAccessor;
 /**
- * Compose class strings safely. Built on `clsx` + `tailwind-merge`.
+ * Compose class strings — UI-library agnostic. Built on `clsx` only.
  *
- * Use with the `d()` token resolver for conditional classes and overrides:
  *   <div className={cn(d("base"), isActive && d("active"), className)} />
  *
- * - `clsx` handles falsy filter (undefined / false / null skipped)
- * - `tailwind-merge` resolves Tailwind conflicts (e.g. `bg-red-500` vs `bg-blue-500` -> keep the later class)
+ * - Joins class values and filters falsy ones (undefined / false / null).
+ * - Does NOT resolve Tailwind conflicts — KDF stays styling-system agnostic
+ *   and does not bundle a Tailwind-specific dependency.
  *
- * Without `cn`, direct string concatenation cannot resolve conflicting
- * variants. When conditional and base classes both define `bg-*`, all classes
- * stay active and CSS resolution becomes ambiguous. `cn` normalizes that
- * automatically.
+ * If you use Tailwind and want later classes to win over conflicting earlier
+ * ones (e.g. `bg-red-500` then `bg-blue-500`), wrap `cn` with `tailwind-merge`
+ * in your own app:
+ *
+ *   import { cn as kcn } from "@kondeio/kdf";
+ *   import { twMerge } from "tailwind-merge";
+ *   export const cn = (...a: unknown[]) => twMerge(kcn(...(a as ClassValue[])));
  */
 export declare function cn(...inputs: ClassValue[]): string;
-//# sourceMappingURL=index.d.ts.map
