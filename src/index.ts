@@ -11,6 +11,19 @@ export type {
 } from "./types.js";
 export { clearKdfCache } from "./resolver.js";
 
+export type ClassMergeFunction = (className: string) => string;
+
+export interface ClassComposerOptions {
+  /**
+   * Optional app-defined semantic merge step.
+   *
+   * KDF's default merge only removes exact duplicate classes. If an app wants
+   * semantic rules such as "keep the last class in this project-specific group",
+   * inject that logic here.
+   */
+  merge?: ClassMergeFunction;
+}
+
 /**
  * Get design accessor for a page.
  *
@@ -35,21 +48,45 @@ export function getDesign(page: string, options?: GetDesignOptions): DesignAcces
 }
 
 /**
- * Compose class strings — UI-library agnostic. Built on `clsx` only.
+ * Remove exact duplicate class names while preserving first-seen order.
  *
- *   <div className={cn(d("base"), isActive && d("active"), className)} />
- *
- * - Joins class values and filters falsy ones (undefined / false / null).
- * - Does NOT resolve framework-specific class conflicts — KDF stays
- *   styling-system agnostic and does not bundle a CSS-framework dependency.
- *
- * If your app uses a styling framework that needs conflict resolution, wrap
- * `cn` with your framework-specific merge helper in your own app:
- *
- *   import { cn as kcn } from "@kondeio/kdf";
- *   import { mergeFrameworkClasses } from "your-framework-merge";
- *   export const cn = (...a: unknown[]) => mergeFrameworkClasses(kcn(...(a as ClassValue[])));
+ * This is intentionally semantic-free: it does not try to understand any CSS
+ * framework. It only turns "btn btn btn-primary" into "btn btn-primary".
  */
-export function cn(...inputs: ClassValue[]): string {
-  return clsx(inputs);
+export function dedupeClasses(className: string): string {
+  const seen = new Set<string>();
+  const output: string[] = [];
+
+  for (const part of className.trim().split(/\s+/)) {
+    if (!part || seen.has(part)) continue;
+    seen.add(part);
+    output.push(part);
+  }
+
+  return output.join(" ");
 }
+
+/**
+ * Create a UI-library agnostic class composer.
+ *
+ * Default behavior:
+ * - flatten strings, arrays, and objects through clsx
+ * - drop falsy values
+ * - normalize whitespace
+ * - remove exact duplicate class names
+ *
+ * Apps that need semantic class conflict handling can inject their own merge
+ * function. KDF does not ship CSS-framework-specific class rules.
+ */
+export function createClassComposer(options: ClassComposerOptions = {}) {
+  const merge = options.merge ?? dedupeClasses;
+
+  return (...inputs: ClassValue[]): string => {
+    const joined = clsx(...inputs);
+    return merge(joined);
+  };
+}
+
+export const composeClasses = createClassComposer();
+export const cx = composeClasses;
+export const cn = composeClasses;

@@ -36,8 +36,9 @@ docs/        Concept, agent skill, and license docs
 ## Pull requests
 
 - Branch off `main`; keep PRs focused on one change.
-- Keep the core **UI-library agnostic** — do not add Tailwind- or framework-
-  specific runtime dependencies. `cn()` stays `clsx`-only by design.
+- Keep the core **UI-library agnostic** — do not add framework-specific runtime
+  dependencies. Class conflict rules belong in app-level
+  `createClassComposer({ merge })` integrations.
 - The resolver is **server-only** (Node `fs`). Do not introduce browser/DOM
   assumptions into `src/resolver.ts`.
 - Update `CHANGELOG.md` under `## Unreleased`.

@@ -1,6 +1,14 @@
 import { mkdirSync, rmSync, writeFileSync } from "fs";
 import { join } from "path";
-import { clearKdfCache, getDesign } from "./src/index";
+import {
+  clearKdfCache,
+  cn,
+  composeClasses,
+  createClassComposer,
+  cx,
+  dedupeClasses,
+  getDesign,
+} from "./src/index";
 import { loadFile } from "./src/resolver";
 
 let pass = 0;
@@ -113,6 +121,24 @@ assert("cache none re-reads changed value", uncached("hero.cta"), "inline-flex t
 process.env.KDF_DIR = originalKdfDir;
 clearKdfCache();
 rmSync(tempRoot, { recursive: true, force: true });
+
+// ── Test: class composition ──
+console.log("\nclass composition");
+assert("cn joins conditional classes", cn("btn", false, null, undefined, "btn-primary"), "btn btn-primary");
+assert("cn removes exact duplicates", cn("btn btn", "btn-primary", "btn"), "btn btn-primary");
+assert("dedupeClasses preserves first-seen order", dedupeClasses("b a b c a"), "b a c");
+assert("composeClasses flattens arrays and objects", composeClasses(["btn", ["active"]], { disabled: false, primary: true }), "btn active primary");
+assert("cx aliases composeClasses", cx("a", "a", "b"), "a b");
+
+const customComposer = createClassComposer({
+  merge(className) {
+    return className
+      .split(/\s+/)
+      .filter((part) => !part.startsWith("drop-"))
+      .join(" ");
+  },
+});
+assert("createClassComposer accepts custom merge", customComposer("keep drop-old", "next"), "keep next");
 
 // ── Result ──
 console.log(`\n${pass} passed, ${fail} failed\n`);

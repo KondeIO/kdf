@@ -118,11 +118,20 @@ const d = getDesign("homepage");
 </h1>
 ```
 
-## `cn()`
+## Class composition
 
-KDF exports a small `cn()` helper for composing conditional classes. It is
-`clsx`-only by design, so it stays UI-library agnostic and does not assume any
-framework-specific class conflict rules.
+KDF includes small class composition helpers that work with any UI library:
+
+- `cn()` - join conditional classes, drop falsy values, dedupe exact duplicates.
+- `cx()` - alias of `cn()`.
+- `composeClasses()` - alias of `cn()` with a more explicit name.
+- `dedupeClasses()` - remove exact duplicate class names from an existing string.
+- `createClassComposer({ merge })` - create your own composer with an app-defined
+  merge step.
+
+The default behavior is intentionally universal. It does not try to understand
+semantic conflicts like colors, spacing, variants, or framework-specific utility
+groups. It only normalizes and dedupes exact class names.
 
 ```tsx
 import { cn, getDesign } from "@kondeio/kdf";
@@ -137,17 +146,26 @@ const d = getDesign("homepage");
 </button>
 ```
 
-If your app uses a styling framework that needs its own class conflict
-resolution, wrap KDF's `cn()` in your app-level utility instead of adding that
-framework rule to KDF core:
+Exact duplicate dedupe:
 
 ```ts
-import { cn as kcn } from "@kondeio/kdf";
-import { mergeFrameworkClasses } from "your-framework-merge";
+import { dedupeClasses } from "@kondeio/kdf";
 
-export function cn(...inputs: Parameters<typeof kcn>) {
-  return mergeFrameworkClasses(kcn(...inputs));
-}
+dedupeClasses("btn btn btn-primary");
+// "btn btn-primary"
+```
+
+Custom merge strategy:
+
+```ts
+import { createClassComposer } from "@kondeio/kdf";
+
+const cn = createClassComposer({
+  merge(className) {
+    // Example: apply project-specific class rules here.
+    return className;
+  },
+});
 ```
 
 ## Server-only

@@ -3,7 +3,7 @@
 Use this skill whenever you build, review, or modify UI that uses Konde Design Framework.
 
 Package: `@kondeio/kdf`
-Primary API: `getDesign`, `cn`, `clearKdfCache`
+Primary API: `getDesign`, `cn`, `cx`, `composeClasses`, `dedupeClasses`, `createClassComposer`, `clearKdfCache`
 Required convention: every `d()` usage must have matching `data-kdf`
 
 ## Goal
@@ -118,7 +118,7 @@ Example:
 
 Avoid copying the same long button class into many page files.
 
-### 5. Use `cn()` for Composition
+### 5. Use KDF Class Composition
 
 Use `cn()` when combining KDF tokens with conditional classes or caller-provided `className`.
 
@@ -126,7 +126,31 @@ Use `cn()` when combining KDF tokens with conditional classes or caller-provided
 className={cn(d("button.base"), active && d("button.active"), className)}
 ```
 
-Do not concatenate class strings manually when conditional classes can drift or duplicate. Use `cn()` for predictable class composition.
+Do not concatenate class strings manually when conditional classes can drift or duplicate.
+
+KDF provides universal class helpers:
+
+- `cn()` joins conditional classes, drops falsy values, normalizes whitespace,
+  and removes exact duplicate classes.
+- `cx()` is an alias of `cn()`.
+- `composeClasses()` is the same default composer with a more explicit name.
+- `dedupeClasses()` removes exact duplicate class names from an existing string.
+- `createClassComposer({ merge })` lets the app inject project-specific class
+  rules.
+
+Default KDF composition is semantic-free. It does not resolve color, spacing,
+variant, or framework-specific conflicts. If an app needs those rules, define
+them at app level:
+
+```ts
+import { createClassComposer } from "@kondeio/kdf";
+
+export const cn = createClassComposer({
+  merge(className) {
+    return applyProjectClassRules(className);
+  }
+});
+```
 
 ### 6. Resolve Design Server-Side
 
@@ -302,7 +326,9 @@ Use this checklist before finishing KDF-related UI work.
 - [ ] Every `d()` usage has matching `data-kdf`.
 - [ ] Shared repeated styles live in `kdf/shared`.
 - [ ] One-off page styles live in `kdf/<page>.json`.
-- [ ] Conditional class merging uses `cn()`.
+- [ ] Conditional class composition uses `cn()`, `cx()`, or `composeClasses()`.
+- [ ] Exact duplicate class cleanup uses `dedupeClasses()` when operating on an existing class string.
+- [ ] App-specific semantic merge rules use `createClassComposer({ merge })`, not hardcoded KDF internals.
 - [ ] CSS custom properties use `d.css(path)`.
 - [ ] The app's styling framework scans KDF JSON files when required.
 - [ ] No large design class strings are hardcoded in JSX when a token should exist.
@@ -312,7 +338,7 @@ Use this checklist before finishing KDF-related UI work.
 
 Use this when reviewing code written by another agent.
 
-- [ ] No `@kondeio/kdf` imports remain; use `@kondeio/kdf`.
+- [ ] No legacy `@konde/kdf` imports remain; use `@kondeio/kdf`.
 - [ ] No element uses `d("...")` without `data-kdf`.
 - [ ] `data-kdf` values match the token paths exactly.
 - [ ] No design drift through arbitrary inline styling classes.

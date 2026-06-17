@@ -419,26 +419,53 @@ clearKdfCache();
 
 Use this for explicit invalidation in custom tooling or live editors.
 
-### `cn(...inputs)`
+### Class Composition
 
 ```ts
-import { cn } from "@kondeio/kdf";
+import {
+  cn,
+  cx,
+  composeClasses,
+  createClassComposer,
+  dedupeClasses
+} from "@kondeio/kdf";
 
 className={cn(d("button.base"), isActive && d("button.active"), className)}
 ```
 
-`cn` is built on `clsx` only — it stays UI-library agnostic and does not bundle
-a CSS-framework-specific dependency.
+KDF ships a small, UI-library agnostic class composition layer:
 
-It joins class values and filters falsy ones. It does **not** resolve
-framework-specific class conflicts. If your app needs that behavior, wrap KDF's
-`cn` with your own framework-specific merge helper:
+- `cn()` joins conditional class values, drops falsy values, normalizes
+  whitespace, and removes exact duplicate classes.
+- `cx()` is an alias of `cn()`.
+- `composeClasses()` is the same default composer with a more explicit name.
+- `dedupeClasses()` removes exact duplicates from an existing class string.
+- `createClassComposer({ merge })` creates a composer with an app-defined merge
+  step.
+
+Default behavior is semantic-free. KDF does not try to understand colors,
+spacing, variants, framework utility groups, or component-library conventions.
+It only turns repeated exact classes into one stable class:
 
 ```ts
-import { cn as kcn } from "@kondeio/kdf";
-import { mergeFrameworkClasses } from "your-framework-merge";
-export const cn = (...a: unknown[]) => mergeFrameworkClasses(kcn(...(a as any[])));
+dedupeClasses("btn btn btn-primary");
+// "btn btn-primary"
 ```
+
+If an app needs project-specific conflict resolution, inject that logic:
+
+```ts
+import { createClassComposer } from "@kondeio/kdf";
+
+export const cn = createClassComposer({
+  merge(className) {
+    return applyProjectClassRules(className);
+  }
+});
+```
+
+This keeps KDF neutral while still allowing each app to enforce its own class
+rules.
 
 ## Cache Behavior
 
@@ -484,9 +511,10 @@ The package depends on:
 }
 ```
 
-`clsx` must remain a real dependency (not peer-only) because `cn()` uses it at
-runtime. KDF intentionally does **not** depend on framework-specific class merge
-packages. Conflict resolution is opt-in per consumer.
+`clsx` must remain a real dependency (not peer-only) because KDF's class
+composition helpers use it at runtime. KDF intentionally does **not** depend on
+framework-specific class merge packages. Semantic conflict resolution is opt-in
+per consumer through `createClassComposer({ merge })`.
 
 ## UI Library Compatibility
 
