@@ -3,10 +3,6 @@
 All notable changes to KDF are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com); versions follow semver.
 
-## [Unreleased]
-
-No unreleased changes yet.
-
 ## [0.1.0] - 2026-06-18
 
 Initial public release candidate.
