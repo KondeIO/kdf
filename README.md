@@ -1,44 +1,40 @@
 # @kondeio/kdf - Konde Design Framework
 
-Agent-first design consistency for web apps. KDF turns design into JSON so AI
-agents can build and update UI from a shared design source of truth.
+Agent-first design consistency for web apps.
 
-Design-as-JSON. Works like i18n: one page maps to one JSON file.
+KDF gives AI agents a JSON source of truth for layout, spacing, typography, and
+component styling. Agents can build or update UI from that source instead of
+rediscovering design rules across components, pages, and previous sessions.
 
-KDF solves design consistency for agent-assisted web development. Instead of
-scattering styling across components, pages, and generated changes, KDF gives
-agents a stable design contract before they touch UI.
-
-KDF is **agent-first with human oversight**: agents use the JSON design contract
-to apply layout, spacing, typography, and component styling consistently. Users
-stay in the approval loop and only need to correct the design source when the
-agent misses intent or the product direction changes.
+Think of it like i18n for design: one page maps to one JSON file, and each
+rendered element can point back to its exact design key with `data-kdf`. Users
+stay in the approval loop and adjust the source only when intent or product
+direction changes.
 
 ## Why
 
-Styling drifts when class names live scattered across `.tsx` files:
+Styling drifts when class names live only inside `.tsx` files:
 
 - the same button slowly gets five different variants
 - spacing changes page by page
 - colors and typography become inconsistent
-- every new AI session has to rediscover the design rules
+- each new AI session has to rediscover the design rules
 - users spend time correcting visual drift through chat
 
-KDF moves the repeatable design layer into JSON:
+KDF moves repeatable styling into JSON:
 
-- agents follow tokens before changing UI
-- users can edit design tokens directly
+- agents apply tokens before changing UI
+- users can review and adjust the source when needed
 - `data-kdf` maps every DOM element back to its exact JSON path
 - the same design key can be scanned, tested, reviewed, and edited later
 
-KDF is a coordination layer over your existing styling stack: plain CSS, CSS
-modules, utility CSS, Bootstrap, shadcn, or your own design system. It is not a
-component library and not a CSS engine.
+KDF works with your existing styling stack: plain CSS, CSS modules, utility CSS,
+Bootstrap, shadcn, or a custom design system. It is not a component library and
+not a CSS engine.
 
 ## Install
 
-Default install scaffolds the starter `kdf/` folder if it does not exist.
-Existing files are never overwritten.
+Install the package:
 
 ```bash
 npm install @kondeio/kdf
@@ -46,13 +42,16 @@ pnpm add @kondeio/kdf
 bun add @kondeio/kdf
 ```
 
-If you want to install the dependency without running the initializer:
+By default, install also scaffolds a starter `kdf/` folder when one does not
+already exist. Existing files are never overwritten.
+
+To install the dependency without running the initializer:
 
 ```bash
 npm install @kondeio/kdf --ignore-scripts
 ```
 
-You can run initialization manually later:
+Run initialization manually later:
 
 ```bash
 npx kdf init
@@ -61,7 +60,7 @@ npx kdf init
 `npx kdf init` uses the local package binary when `@kondeio/kdf` is already
 installed in the project.
 
-## Structure
+## File Structure
 
 ```
 kdf/
@@ -70,7 +69,7 @@ kdf/
   pricing.json         <- pricing page overrides
 ```
 
-Example app structure:
+Typical app structure:
 
 ```
 my-app/
@@ -94,7 +93,7 @@ my-app/
   next.config.ts
 ```
 
-Example token shape:
+Example token:
 
 ```json
 {
@@ -119,20 +118,20 @@ const d = getDesign("homepage");
 </h1>
 ```
 
-## Class composition
+## Class Composition
 
 KDF includes small class composition helpers that work with any UI library:
 
-- `cn()` - join conditional classes, drop falsy values, dedupe exact duplicates.
-- `cx()` - alias of `cn()`.
-- `composeClasses()` - alias of `cn()` with a more explicit name.
-- `dedupeClasses()` - remove exact duplicate class names from an existing string.
-- `createClassComposer({ merge })` - create your own composer with an app-defined
+- `cn()` joins conditional classes, drops falsy values, and removes exact duplicates.
+- `cx()` is an alias of `cn()`.
+- `composeClasses()` is the same default composer with a more explicit name.
+- `dedupeClasses()` removes exact duplicates from an existing class string.
+- `createClassComposer({ merge })` creates a composer with an app-defined
   merge step.
 
-The default behavior is intentionally universal. It does not try to understand
-semantic conflicts like colors, spacing, variants, or framework-specific utility
-groups. It only normalizes and dedupes exact class names.
+The default behavior is intentionally universal. It normalizes whitespace and
+dedupes exact class names, but does not interpret semantic conflicts such as
+color, spacing, variant, or framework-specific utility groups.
 
 ```tsx
 import { cn, getDesign } from "@kondeio/kdf";
@@ -147,7 +146,7 @@ const d = getDesign("homepage");
 </button>
 ```
 
-Exact duplicate dedupe:
+Remove exact duplicates:
 
 ```ts
 import { dedupeClasses } from "@kondeio/kdf";
@@ -156,7 +155,7 @@ dedupeClasses("btn btn btn-primary");
 // "btn btn-primary"
 ```
 
-Custom merge strategy:
+Add project-specific merge rules:
 
 ```ts
 import { createClassComposer } from "@kondeio/kdf";
@@ -172,7 +171,7 @@ const cn = createClassComposer({
 ## Server-only
 
 `getDesign()`, `d()`, and `d.css()` read JSON from disk via Node `fs`, so they
-run on the **server only** — Next.js Server Components, Astro components, or any
+run on the **server only**: Next.js Server Components, Astro components, or any
 server render. They do **not** work inside a Client Component (`"use client"`),
 which has no filesystem.
 
@@ -185,7 +184,7 @@ const d = getDesign("homepage");
 return <ClientThing className={d("hero.cta")} />;
 ```
 
-## @reference
+## References
 
 Reference shared tokens from shared/:
 
@@ -205,17 +204,18 @@ Multiple refs:
 { "hero": { "login": "@button.base @button.ghost @button.sm" } }
 ```
 
-## data-kdf attribute
+## `data-kdf`
 
-Every element using `d()` MUST have `data-kdf`:
+Every element using `d()` should have matching `data-kdf`:
 
 ```tsx
 <div data-kdf="hero.wrapper" className={d("hero.wrapper")}>
 ```
 
-Enables: agent scanning, visual editor (V2), Playwright testing.
+This makes the rendered UI traceable for agent scanning, visual editing, and
+Playwright checks.
 
-## Cache behavior
+## Cache Behavior
 
 KDF caches design JSON files by default. In development it revalidates with
 file `mtime`/`size` checks so repeated `d()` calls do not create disk-read
@@ -227,7 +227,7 @@ const d = getDesign("homepage", { cache: "auto", maxAgeMs: 250 });
 
 Use `clearKdfCache()` for explicit invalidation in custom tooling.
 
-## CSS custom properties
+## CSS Custom Properties
 
 For values not expressible as reusable classes:
 
@@ -242,7 +242,7 @@ For values not expressible as reusable classes:
 }
 ```
 
-Generated into `konde.css`. The plugin exposes its path via env
+Generated CSS can live in `konde.css`. The plugin exposes its path via env
 (`KDF_CLIENT_CSS`); wire the `<link>`/import in your app (e.g. last in
 `globals.css`) — the plugin does not inject it for you.
 
@@ -253,28 +253,28 @@ Generated into `konde.css`. The plugin exposes its path via env
   KDF example preview. Use `PORT=4410` to avoid port conflicts and
   `KDF_PREVIEW_OPEN=0` for test/CI runs without opening a browser.
 
-## Config
+## Next.js Config
 
 ```ts
 // next.config.ts
 import withKDF from "@kondeio/kdf/plugin";
 export default withKDF()(nextConfig);
 
-// Custom dir:
+// Custom KDF directory:
 export default withKDF({ dir: "./my-design" })(nextConfig);
 ```
 
-## Key symbols
+## Key Symbols
 
 | Symbol | Purpose | Example |
-|--------|---------|---------|
-| `$` | Component binding (WHAT to render) | `"$": "Button"` |
-| `@` | Reference (WHERE to get styling) | `"@button.cta"` |
-| `$layout` | Page sections + order | `["hero", "footer"]` |
+| --- | --- | --- |
+| `$` | Component binding | `"$": "Button"` |
+| `@` | Shared style reference | `"@button.cta"` |
+| `$layout` | Page section order | `["hero", "footer"]` |
 
 ## Documentation and Skills
 
-- [`docs/kdf-doc-1.0.md`](./docs/kdf-doc-1.0.md) - full KDF 1.0 concept, architecture, conventions, and release notes.
+- [`docs/kdf-doc-1.0.md`](./docs/kdf-doc-1.0.md) - KDF concept, architecture, conventions, and release notes.
 - [`docs/kdf-skill-1.0.md`](./docs/kdf-skill-1.0.md) - agent-facing implementation and review checklist.
 - [`docs/license.md`](./docs/license.md) - license rationale, alternatives considered, and publishing requirements.
 
