@@ -2,16 +2,16 @@
 
 Design-as-JSON. Works like i18n: one page maps to one JSON file.
 
-KDF solves design drift in codebases where UI styling is scattered across
-components, pages, and agent-generated changes. Instead of asking humans or AI
-agents to repeatedly guess "make this bigger", "use the same spacing", or "match
+KDF solves design drift in agent-assisted codebases where UI styling is
+scattered across components, pages, and generated changes. Instead of asking an
+agent to repeatedly guess "make this bigger", "use the same spacing", or "match
 the other page", KDF puts design decisions in JSON so every element can point to
 a stable design key.
 
-KDF is **user-first**: the user owns the design source of truth and can edit it
-directly. It is also **agent-readable**: agents can inspect the same JSON and
-apply the design without improvising. The goal is not to let agents design for
-the user; the goal is to stop agents from guessing.
+KDF is **agent-first and user-owned**: agents read the design source of truth
+before touching UI, while the user keeps control by editing plain JSON. The goal
+is not to let agents design for the user; the goal is to stop agents from
+guessing.
 
 ## Why
 
@@ -25,8 +25,8 @@ Styling drifts when class names live scattered across `.tsx` files:
 
 KDF moves the repeatable design layer into JSON:
 
+- agents read tokens before changing UI
 - users can edit design tokens directly
-- agents read tokens instead of inventing styles
 - `data-kdf` maps every DOM element back to its exact JSON path
 - the same design key can be scanned, tested, reviewed, and edited later
 
@@ -268,11 +268,11 @@ export default withKDF({ dir: "./my-design" })(nextConfig);
 | `@` | Reference (WHERE to get styling) | `"@button.cta"` |
 | `$layout` | Page sections + order | `["hero", "footer"]` |
 
-## Documentation
+## Documentation and Skills
 
-- `docs/kdf-doc-1.0.md` - full KDF 1.0 concept, architecture, conventions, and release notes.
-- `docs/kdf-skill-1.0.md` - agent-facing implementation and review checklist.
-- `docs/license.md` - license rationale, alternatives considered, and publishing requirements.
+- [`docs/kdf-doc-1.0.md`](./docs/kdf-doc-1.0.md) - full KDF 1.0 concept, architecture, conventions, and release notes.
+- [`docs/kdf-skill-1.0.md`](./docs/kdf-skill-1.0.md) - agent-facing implementation and review checklist.
+- [`docs/license.md`](./docs/license.md) - license rationale, alternatives considered, and publishing requirements.
 
 ## Contributing
 
