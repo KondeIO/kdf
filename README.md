@@ -276,6 +276,8 @@ Generated CSS can live in `konde.css`. The plugin exposes its path via env
 
 ## Next.js Config
 
+Default KDF directory (`./kdf`):
+
 ```ts
 // next.config.ts
 import withKDF from "@kondeio/kdf/plugin";
@@ -283,7 +285,7 @@ import withKDF from "@kondeio/kdf/plugin";
 export default withKDF()(nextConfig);
 ```
 
-Custom KDF directory:
+Custom KDF directory (`./my-design`):
 
 ```ts
 // next.config.ts

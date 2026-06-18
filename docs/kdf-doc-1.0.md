@@ -185,6 +185,8 @@ The package should not include local `node_modules`, local tarballs, or OS noise
 
 Next.js config, when using the optional Next.js plugin:
 
+Default KDF directory (`./kdf`):
+
 ```ts
 // next.config.ts
 import withKDF from "@kondeio/kdf/plugin";
@@ -192,7 +194,7 @@ import withKDF from "@kondeio/kdf/plugin";
 export default withKDF()(nextConfig);
 ```
 
-Custom design directory:
+Custom KDF directory (`./my-design`):
 
 ```ts
 // next.config.ts
