@@ -3,6 +3,7 @@
 Use this skill whenever you build, review, or modify UI that uses Konde Design Framework.
 
 Package: `@kondeio/kdf`
+Runtime target: Node/server-side JavaScript. Tested with Next.js, Astro, and Hono.
 Primary API: `getDesign`, `cn`, `cx`, `composeClasses`, `dedupeClasses`, `createClassComposer`, `clearKdfCache`
 Required convention: every `d()` usage must have matching `data-kdf`
 
@@ -156,8 +157,9 @@ export const cn = createClassComposer({
 
 `getDesign()` / `d()` / `d.css()` read JSON via Node `fs` — server-only. Never
 call them in a Client Component (`"use client"`); the browser has no filesystem.
-Resolve in a Server Component (or Astro server render) and pass the resulting
-className string down to client components as a prop.
+Resolve in server-rendered code such as a Next.js Server Component, Astro
+server render, or Hono server handler, then pass the resulting className string
+down to browser/client components as a prop.
 
 ```tsx
 // Server Component

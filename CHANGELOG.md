@@ -13,8 +13,8 @@ Initial public release candidate.
   while `createClassComposer({ merge })` allows app-defined semantic merge
   rules without adding framework-specific runtime dependencies to KDF.
 - Package scope renamed `@konde/kdf` → `@kondeio/kdf`.
-- `package.json` description broadened: framework-agnostic core, first-class
-  Next.js plugin.
+- `package.json` description clarified: KDF is a Node/server-side package with
+  an optional Next.js plugin and UI-library agnostic class composition.
 
 ### Added
 - `dedupeClasses()`, `composeClasses()`, `cx()`, and

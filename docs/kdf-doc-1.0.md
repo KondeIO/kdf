@@ -9,7 +9,7 @@ Status: private GitHub repo prepared, npm publish deferred
 
 ## Positioning
 
-Konde Design Framework, or KDF, is a JSON-based design system for Next.js and agent-assisted UI work.
+Konde Design Framework, or KDF, is a JSON-based design system for Node/server-side web apps and agent-assisted UI work.
 
 One sentence:
 
@@ -17,9 +17,28 @@ One sentence:
 KDF does for design consistency what i18n does for translation consistency.
 ```
 
-KDF moves page and component styling out of scattered JSX and into JSON files that agents can follow and humans can review. The agent implements UI from the JSON design contract instead of improvising spacing, colors, typography, and layout. Users stay in the approval loop and only need to correct the design source when the agent misses intent or the product direction changes.
+KDF moves page and component styling out of scattered JSX and into JSON files that agents can follow and humans can review. The agent implements UI from the JSON source of truth instead of inventing spacing, colors, typography, and layout in component files. Users stay in the approval loop and correct the design source when intent or product direction changes.
 
 KDF is not a component library and not a CSS engine. It is a design coordination layer over normal CSS, CSS modules, utility CSS, Bootstrap, shadcn, or any other class-based styling system.
+
+## Runtime Support
+
+KDF core targets Node/server-side JavaScript runtimes.
+
+- The resolver reads JSON via Node `fs`, so `getDesign()`, `d()`, and `d.css()`
+  are server-only.
+- Core usage works in server-rendered Next.js, Astro, Hono, or similar Node
+  runtimes.
+- The included `@kondeio/kdf/plugin` export is the official Next.js integration.
+- Next.js plugin target: App Router, Next.js 14+ (`next >=14`).
+- Browser-only code and Next.js Client Components cannot call the resolver
+  directly; resolve classes server-side and pass class names down when needed.
+
+| Framework | Status | How KDF is used |
+| --- | --- | --- |
+| Next.js | Tested | Core API in server-rendered code, plus the official `@kondeio/kdf/plugin` integration. |
+| Astro | Tested | Core API in server-rendered code. |
+| Hono | Tested | Core API in server handlers. |
 
 ## README vs This Document
 
@@ -164,7 +183,7 @@ The package should not include local `node_modules`, local tarballs, or OS noise
 
 ## Configuration
 
-Next.js config:
+Next.js config, when using the optional Next.js plugin:
 
 ```ts
 // next.config.ts
@@ -378,7 +397,7 @@ If an element uses `d("hero.title")` but lacks `data-kdf="hero.title"`, it shoul
 ## Runtime API
 
 > **Server-only.** `getDesign()`, `d()`, and `d.css()` read JSON from disk via
-> Node `fs`. Use them in Server Components / server render (Next.js RSC, Astro).
+> Node `fs`. Use them in Next.js Server Components or server-rendered code.
 > They do not run in a Client Component (`"use client"`) — resolve on the server
 > and pass the className string down as a prop.
 

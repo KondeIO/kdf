@@ -1,10 +1,11 @@
 # @kondeio/kdf - Konde Design Framework
 
-Agent-first design consistency for web apps.
+Agent-first design consistency for Node-powered web apps.
 
 KDF gives AI agents a JSON source of truth for layout, spacing, typography, and
-component styling. Agents can build or update UI from that source instead of
-rediscovering design rules across components, pages, and previous sessions.
+component styling. Agents can build or update UI from that source in
+server-side JavaScript apps instead of rediscovering design rules across
+components, pages, and previous sessions.
 
 Think of it like i18n for design: one page maps to one JSON file, and each
 rendered element can point back to its exact design key with `data-kdf`. Users
@@ -31,6 +32,24 @@ KDF moves repeatable styling into JSON:
 KDF works with your existing styling stack: plain CSS, CSS modules, utility CSS,
 Bootstrap, shadcn, or a custom design system. It is not a component library and
 not a CSS engine.
+
+## Runtime Support
+
+KDF core runs in Node/server-side JavaScript environments because it reads JSON
+from disk with Node `fs`.
+
+- Works with server-rendered Next.js, Astro, Hono, or similar Node runtimes.
+- The included `@kondeio/kdf/plugin` export is the official Next.js integration.
+- Next.js plugin target: App Router, Next.js 14+ (`next >=14`).
+- `getDesign()`, `d()`, and `d.css()` are server-only. Browser/client
+  components cannot call them directly; resolve classes server-side and pass
+  class names down when needed.
+
+| Framework | Status | How KDF is used |
+| --- | --- | --- |
+| Next.js | Tested | Core API in server-rendered code, plus the official `@kondeio/kdf/plugin` integration. |
+| Astro | Tested | Core API in server-rendered code. |
+| Hono | Tested | Core API in server handlers. |
 
 ## Install
 
@@ -122,12 +141,13 @@ const d = getDesign("homepage");
 
 KDF includes small class composition helpers that work with any UI library:
 
-- `cn()` joins conditional classes, drops falsy values, and removes exact duplicates.
-- `cx()` is an alias of `cn()`.
-- `composeClasses()` is the same default composer with a more explicit name.
-- `dedupeClasses()` removes exact duplicates from an existing class string.
-- `createClassComposer({ merge })` creates a composer with an app-defined
-  merge step.
+| Helper | Purpose |
+| --- | --- |
+| `cn()` | Joins conditional classes, drops falsy values, normalizes whitespace, and removes exact duplicates. |
+| `cx()` | Alias of `cn()`. |
+| `composeClasses()` | Same default composer with a more explicit name. |
+| `dedupeClasses()` | Removes exact duplicates from an existing class string. |
+| `createClassComposer({ merge })` | Creates a composer with an app-defined merge step. |
 
 The default behavior is intentionally universal. It normalizes whitespace and
 dedupes exact class names, but does not interpret semantic conflicts such as
@@ -171,9 +191,10 @@ const cn = createClassComposer({
 ## Server-only
 
 `getDesign()`, `d()`, and `d.css()` read JSON from disk via Node `fs`, so they
-run on the **server only**: Next.js Server Components, Astro components, or any
-server render. They do **not** work inside a Client Component (`"use client"`),
-which has no filesystem.
+run on the **server only**: Next.js Server Components, Astro server rendering,
+Hono handlers, or equivalent Node/server-rendered code. They do **not** work
+inside browser-only code or a Next.js Client Component (`"use client"`), which
+has no filesystem.
 
 For client components, resolve on the server and pass the resulting className
 string down as a prop:

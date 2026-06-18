@@ -12,4 +12,4 @@
   }
 }
 
-/* konde.css is loaded automatically as last <link> in <head> by withKDF() plugin */
+/* Load konde.css after framework CSS in the host app. withKDF() only exposes paths. */

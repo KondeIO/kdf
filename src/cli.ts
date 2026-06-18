@@ -56,7 +56,7 @@ function cmdInit(): void {
 const command = process.argv[2];
 
 if (!command || !commands[command]) {
-    console.log("@kondeio/kdf - Design-as-JSON for Next.js");
+    console.log("@kondeio/kdf - Design-as-JSON for agent-assisted UI");
   console.log("");
   console.log("Commands:");
   console.log("  init       Scaffold kdf/ folder + konde.css");

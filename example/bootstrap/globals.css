@@ -9,4 +9,4 @@
   --bs-btn-hover-border-color: var(--kdf-primary, #0d6efd);
 }
 
-/* konde.css is loaded automatically as last <link> in <head> by withKDF() plugin */
+/* Load konde.css after framework CSS in the host app. withKDF() only exposes paths. */
