@@ -195,6 +195,9 @@ export default withKDF()(nextConfig);
 Custom design directory:
 
 ```ts
+// next.config.ts
+import withKDF from "@kondeio/kdf/plugin";
+
 export default withKDF({ dir: "./my-design" })(nextConfig);
 ```
 
