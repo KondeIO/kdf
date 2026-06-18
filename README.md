@@ -250,6 +250,9 @@ Generated into `konde.css`. The plugin exposes its path via env
 ## Commands
 
 - `kdf init` - scaffold the starter `kdf/` folder and generated CSS files.
+- `bun example/preview.ts [tailwind|shadcn|bootstrap|pure-css]` - run the local
+  KDF example preview. Use `PORT=4410` to avoid port conflicts and
+  `KDF_PREVIEW_OPEN=0` for test/CI runs without opening a browser.
 
 ## Config
 

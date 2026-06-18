@@ -12,9 +12,9 @@ import { $ } from "bun";
 
 /**
  * Usage:
- *   bun example/preview.ts              → tailwind (default)
- *   bun example/preview.ts bootstrap    → bootstrap
- *   bun example/preview.ts pure-css     → plain CSS
+ *   bun example/preview.ts                         → tailwind (default)
+ *   bun example/preview.ts bootstrap               → bootstrap
+ *   PORT=4410 KDF_PREVIEW_OPEN=0 bun example/preview.ts pure-css
  */
 const FRAMEWORK = process.argv[2] || "tailwind";
 const FRAMEWORK_DIRS: Record<string, string> = {
@@ -319,7 +319,9 @@ function escape(s: string): string {
 }
 
 // Live server with file watching
-const PORT = 4400;
+const portFromEnv = Number(process.env.PORT);
+const PORT = Number.isInteger(portFromEnv) && portFromEnv > 0 ? portFromEnv : 4400;
+const SHOULD_OPEN_BROWSER = process.env.KDF_PREVIEW_OPEN !== "0";
 let clients: ReadableStreamDefaultController[] = [];
 
 // SSE endpoint for live reload
@@ -421,4 +423,6 @@ console.log(`KDF Preview: http://localhost:${PORT}`);
 console.log(`Pages: ${getPages().join(", ")}`);
 console.log(`Watching kdf/ for changes — auto-reload enabled\n`);
 
-await $`open http://localhost:${PORT}`.quiet();
+if (SHOULD_OPEN_BROWSER) {
+  await $`open http://localhost:${PORT}`.quiet();
+}
