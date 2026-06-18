@@ -1,7 +1,7 @@
 {
   "name": "@kondeio/kdf",
   "version": "0.1.0",
-  "description": "Konde Design Framework — JSON-based design system. Framework-agnostic core (server-side fs); first-class Next.js plugin.",
+  "description": "Agent-first design consistency for web apps. KDF turns design into JSON so AI agents can build UI without guessing.",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",

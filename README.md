@@ -1,12 +1,14 @@
 # @kondeio/kdf - Konde Design Framework
 
+Agent-first design consistency for web apps. KDF turns design into JSON so AI
+agents can build and update UI without guessing spacing, typography, layout, or
+component styling.
+
 Design-as-JSON. Works like i18n: one page maps to one JSON file.
 
-KDF solves design drift in agent-assisted codebases where UI styling is
-scattered across components, pages, and generated changes. Instead of asking an
-agent to repeatedly guess "make this bigger", "use the same spacing", or "match
-the other page", KDF puts design decisions in JSON so every element can point to
-a stable design key.
+KDF solves design consistency for agent-assisted web development. Instead of
+scattering styling across components, pages, and generated changes, KDF gives
+agents a stable design source of truth before they touch UI.
 
 KDF is **agent-first and user-owned**: agents read the design source of truth
 before touching UI, while the user keeps control by editing plain JSON. The goal
