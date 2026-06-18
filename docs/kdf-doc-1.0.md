@@ -17,7 +17,7 @@ One sentence:
 KDF does for design consistency what i18n does for translation consistency.
 ```
 
-KDF moves page and component styling out of scattered JSX and into JSON files that humans and agents can both read. The user controls the design by editing JSON. The agent implements UI by reading JSON instead of guessing spacing, colors, typography, and layout.
+KDF moves page and component styling out of scattered JSX and into JSON files that agents can follow and humans can review. The agent implements UI from the JSON design contract instead of improvising spacing, colors, typography, and layout. Users stay in the approval loop and only need to correct the design source when the agent misses intent or the product direction changes.
 
 KDF is not a component library and not a CSS engine. It is a design coordination layer over normal CSS, CSS modules, utility CSS, Bootstrap, shadcn, or any other class-based styling system.
 
@@ -45,7 +45,7 @@ Without KDF, classes live across many `.tsx` files:
 
 That works for humans, but it is fragile for agentic work:
 
-- agents guess design details
+- agents improvise design details
 - users correct by chat
 - each page drifts slightly
 - changes require searching code

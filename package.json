@@ -1,7 +1,7 @@
 {
   "name": "@kondeio/kdf",
   "version": "0.1.0",
-  "description": "Agent-first design consistency for web apps. KDF turns design into JSON so AI agents can build UI without guessing.",
+  "description": "Agent-first design consistency for web apps. KDF turns design into JSON so AI agents build UI from a shared design contract.",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
