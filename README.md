@@ -79,6 +79,12 @@ npx kdf init
 `npx kdf init` uses the local package binary when `@kondeio/kdf` is already
 installed in the project.
 
+Initialize a custom design directory:
+
+```bash
+KDF_DIR=./designs npx kdf init
+```
+
 ## File Structure
 
 ```
@@ -110,6 +116,41 @@ my-app/
     konde-server.css
     konde.css
   next.config.ts
+```
+
+## Custom Design Directory
+
+The default design directory is `./kdf`.
+
+Use `./designs` or `./design` through `KDF_DIR` in any Node/server-side runtime:
+
+```bash
+KDF_DIR=./designs npm run dev
+```
+
+```tsx
+import { getDesign } from "@kondeio/kdf";
+
+const d = getDesign("homepage");
+```
+
+In Next.js, the optional plugin sets `KDF_DIR` for the app:
+
+```ts
+// next.config.ts
+import withKDF from "@kondeio/kdf/plugin";
+
+export default withKDF({ dir: "./designs" })(nextConfig);
+```
+
+With that config, KDF reads:
+
+```text
+designs/
+  shared/
+  homepage.json
+  konde-server.css
+  konde.css
 ```
 
 Example token:
