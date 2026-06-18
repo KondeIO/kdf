@@ -2,7 +2,8 @@
 
 Package: `@kondeio/kdf`
 License: MIT
-Version: 1.0
+Document version: 1.0
+Package version: 0.1.0
 
 ## Decision
 

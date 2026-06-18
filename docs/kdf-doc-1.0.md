@@ -1,6 +1,7 @@
 # Konde Design Framework 1.0
 
-Version: 1.0
+Document version: 1.0
+Package version: 0.1.0
 Package: `@kondeio/kdf`
 Repository: `https://github.com/KondeIO/kdf`
 License: MIT

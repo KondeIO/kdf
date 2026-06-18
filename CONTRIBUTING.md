@@ -17,7 +17,7 @@ bun install
 ```bash
 bun run build       # tsc -> dist/
 bun run typecheck   # tsc --noEmit
-bun test            # unit tests
+bun run test        # unit tests
 ```
 
 A change is ready for review when `typecheck` and `test` pass and `dist/` has

@@ -5,6 +5,12 @@ All notable changes to KDF are documented here. Format loosely follows
 
 ## [Unreleased]
 
+No unreleased changes yet.
+
+## [0.1.0] - 2026-06-18
+
+Initial public release candidate.
+
 ### Changed
 - **Class composition is now UI-library agnostic.** `cn()` / `cx()` /
   `composeClasses()` normalize and dedupe exact duplicate classes by default,
@@ -29,9 +35,3 @@ All notable changes to KDF are documented here. Format loosely follows
 - Corrected the plugin "auto-inject CSS" claim: `withKDF()` only exposes paths
   via env (`KDF_DIR`, `KDF_SERVER_CSS`, `KDF_CLIENT_CSS`); the host app wires the
   stylesheet.
-
-## [0.1.0]
-
-- Initial KDF package: `getDesign()` accessor, `@`-reference resolution, dev
-  cache with `mtimeMs`/`size` revalidation, `withKDF()` Next.js plugin, starter
-  scaffolding.
