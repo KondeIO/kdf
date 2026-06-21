@@ -177,6 +177,11 @@ kdf/
   konde.css
 ```
 
+Only `shared/`, `homepage.json`, `konde-server.css`, and `konde.css` are part of
+the generated starter. Additional page JSON files such as pricing, dashboard, or
+about examples live under `example/sample-pages/` as references and are not
+copied into a consumer project by install or `kdf init`.
+
 The npm package intentionally includes:
 
 ```json

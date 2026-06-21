@@ -94,9 +94,29 @@ assert("no css on hero.title", Object.keys(css).length, 0);
 
 // ── Test: pricing page ──
 console.log("\npricing page");
-const dp = getDesign("pricing");
+const originalKdfDirForPricing = process.env.KDF_DIR;
+const pricingTempRoot = join(process.cwd(), ".tmp-kdf-pricing-test");
+const pricingTempDir = join(pricingTempRoot, "designs");
+rmSync(pricingTempRoot, { recursive: true, force: true });
+mkdirSync(join(pricingTempDir, "shared"), { recursive: true });
+writeFileSync(join(pricingTempDir, "shared", "button.json"), JSON.stringify({
+  base: "inline-flex",
+  primary: "bg-blue-600 text-white",
+  md: "px-4 py-2",
+}));
+writeFileSync(join(pricingTempDir, "pricing.json"), JSON.stringify({
+  plans: {
+    cta: "@button.base @button.primary @button.md w-full justify-center",
+  },
+}));
+process.env.KDF_DIR = pricingTempDir;
+clearKdfCache();
+const dp = getDesign("pricing", { cache: "none" });
 const price = dp("plans.cta");
 assertIncludes("pricing cta has primary (bg-blue-600)", price, "bg-blue-600");
+process.env.KDF_DIR = originalKdfDirForPricing;
+clearKdfCache();
+rmSync(pricingTempRoot, { recursive: true, force: true });
 
 // ── Test: dev cache revalidation ──
 console.log("\ndev cache revalidation");

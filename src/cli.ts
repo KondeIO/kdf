@@ -44,9 +44,10 @@ function cmdInit(): void {
   console.log("  kdf/");
   console.log("    shared/");
   console.log("      button.json");
-  console.log("      typography.json");
   console.log("      card.json");
+  console.log("      color.json");
   console.log("      layout.json");
+  console.log("      typography.json");
   console.log("    homepage.json");
   console.log("    konde-server.css  (critical overrides — import in layout.tsx)");
   console.log("    konde.css         (non-critical overrides — <link> last in <head>)");

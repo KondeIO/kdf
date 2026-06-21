@@ -90,9 +90,14 @@ KDF_DIR=./designs npx kdf init
 ```
 kdf/
   shared/              <- shared defaults (button, typography, layout, card)
-  homepage.json        <- full homepage design
-  pricing.json         <- pricing page overrides
+  homepage.json        <- starter page design
+  konde-server.css     <- critical project overrides
+  konde.css            <- non-critical project overrides
 ```
+
+The package repository also keeps additional page JSON examples under
+`example/sample-pages/`. They are reference material only and are not copied by
+`postinstall` or `kdf init`.
 
 Typical app structure:
 
@@ -112,7 +117,6 @@ my-app/
       layout.json
       typography.json
     homepage.json
-    pricing.json
     konde-server.css
     konde.css
   next.config.ts
