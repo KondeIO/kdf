@@ -3,53 +3,28 @@
 Package: `@kondeio/kdf`
 License: MIT
 
-## Positioning
+Konde Design Framework, or KDF, is a JSON-based design coordination layer for
+Node/server-side web apps and agent-assisted UI work.
 
-Konde Design Framework, or KDF, is a JSON-based design system for Node/server-side web apps and agent-assisted UI work.
+KDF does for design consistency what i18n does for translation consistency:
+move repeatable UI decisions out of scattered component files and into a stable
+source of truth that both users and agents can read.
 
-One sentence:
+## Goal
 
-```text
-KDF does for design consistency what i18n does for translation consistency.
-```
+Design control and consistency through JSON as the shared language between users
+and agents.
 
-KDF moves page and component styling out of scattered JSX and into JSON files that agents can follow and humans can review. The agent implements UI from the JSON source of truth instead of inventing spacing, colors, typography, and layout in component files. Users stay in the approval loop and correct the design source when intent or product direction changes.
+- Users own design direction and approval.
+- Users can edit JSON directly when they want precise control.
+- Agents read KDF JSON and implement UI from it.
+- Code renders the approved design.
+- `data-kdf` maps DOM elements back to exact JSON paths.
+- One source of truth keeps every page, component, and agent session consistent.
 
-KDF is not a component library and not a CSS engine. It is a design coordination layer over normal CSS, CSS modules, utility CSS, Bootstrap, shadcn, or any other class-based styling system.
+KDF should reduce chat iteration, not create a new design bureaucracy.
 
-## Runtime Support
-
-KDF core targets Node/server-side JavaScript runtimes.
-
-- The resolver reads JSON via Node `fs`, so `getDesign()`, `d()`, and `d.css()`
-  are server-only.
-- Core usage works in server-rendered Next.js, Astro, Hono, or similar Node
-  runtimes.
-- The included `@kondeio/kdf/plugin` export is the official Next.js integration.
-- Next.js plugin target: App Router, Next.js 14+ (`next >=14`).
-- Browser-only code and Next.js Client Components cannot call the resolver
-  directly; resolve classes server-side and pass class names down when needed.
-
-| Framework | Status | How KDF is used |
-| --- | --- | --- |
-| Next.js | Tested | Core API in server-rendered code, plus the official `@kondeio/kdf/plugin` integration. |
-| Astro | Tested | Core API in server-rendered code. |
-| Hono | Tested | Core API in server handlers. |
-
-## README vs This Document
-
-The package `README.md` should stay concise and technical:
-
-- install command
-- minimal folder structure
-- basic `getDesign()` usage
-- config snippet
-- key API notes
-- license
-
-This document is the longer source of truth for the concept, conventions, operating model, and agent-assisted implementation behavior.
-
-## Problem
+## The Problem
 
 Without KDF, classes live across many `.tsx` files:
 
@@ -58,15 +33,19 @@ Without KDF, classes live across many `.tsx` files:
   <h1 className="text-5xl font-semibold tracking-tight">
 ```
 
-That works for humans, but it is fragile for agentic work:
+That works for a single human editor, but it is fragile for agentic work:
 
-- agents improvise design details
-- users correct by chat
-- each page drifts slightly
-- changes require searching code
+- agents improvise colors, spacing, typography, and layout
+- users correct the result through chat
+- every page drifts slightly
+- changes require searching component files
 - repeated sessions lose design intent
 
-KDF makes the design explicit:
+The result is endless "bigger", "more blue", "move left" iteration.
+
+## The Solution
+
+KDF makes design explicit:
 
 ```json
 {
@@ -84,81 +63,83 @@ const d = getDesign("homepage");
   <h1 data-kdf="hero.title" className={d("hero.title")}>
 ```
 
-The class still renders as normal CSS. The difference is the source of truth.
+The rendered UI still uses normal CSS. The difference is ownership:
 
-## Core Philosophy
+- JSON defines the design.
+- Code renders the design.
+- Agents implement from JSON instead of guessing.
+- Users adjust JSON instead of describing visual corrections repeatedly.
 
-- User owns design direction and approval.
-- Agent reads KDF JSON and implements the UI from it.
-- JSON is the shared language.
-- Code renders the approved design.
-- `data-kdf` maps DOM elements back to exact JSON paths.
-- KDF should reduce chat iteration, not create a new design bureaucracy.
+## Why Not Just a Design Library?
 
-## Package Identity
-
-The public package name is:
+A design library says:
 
 ```text
-@kondeio/kdf
+This is a Button.
 ```
 
-The package exports:
+KDF says:
 
-```ts
-import { getDesign, cn, clearKdfCache } from "@kondeio/kdf";
-import withKDF from "@kondeio/kdf/plugin";
+```text
+This is homepage.hero.cta-primary, rendered as a Button, styled with this token.
 ```
 
-The CLI binary is available as:
+| Approach | What it says | Mapping |
+| --- | --- | --- |
+| Design library | "This is a Button" | Generic component, many possible overrides |
+| KDF | "This is `hero.cta-primary` on `homepage`" | One element maps to one design key |
 
-```bash
-kdf init
-npx kdf init
-npx @kondeio/kdf init
+Design libraries provide component primitives. They do not always enforce which
+style belongs to which element on which page. KDF adds that missing mapping.
+
+```text
+Design library:
+  Button component -> generic styles
+                   -> used in many places
+                   -> every developer or agent can override differently
+                   -> no exact map from element to design decision
+
+KDF:
+  data-kdf="hero.cta-primary" -> d("hero.cta-primary") -> one JSON key
+                               -> one element, one design token
+                               -> scanner and agent can find the source
 ```
 
-## Installation
+KDF is not a replacement for a component library. It can sit above shadcn,
+Bootstrap, Chakra, plain CSS, Tailwind, or a custom design system.
 
-Default install is one-command onboarding:
+## What KDF Does
 
-```bash
-npm install @kondeio/kdf
-pnpm add @kondeio/kdf
-bun add @kondeio/kdf
+KDF translates repeated design decisions from component files into JSON.
+
+```text
+i18n:
+  hardcoded text in JSX -> language keys in JSON -> t("hero.headline")
+
+KDF:
+  hardcoded classes in JSX -> design tokens in JSON -> d("hero.title")
 ```
 
-The package uses `postinstall` to scaffold a starter `kdf/` folder if one does not already exist.
+KDF stores:
 
-The initializer is safe:
+- class names
+- shared style references
+- page section order
+- CSS custom properties
+- optional component identity metadata
 
-- it never overwrites an existing `kdf/` folder
-- it creates only starter design files
-- it can be skipped with install-script opt-out
+KDF does not store:
 
-Script-free install:
+- business logic
+- event handlers
+- data fetching
+- permissions
+- accessibility behavior
+- component implementation
 
-```bash
-npm install @kondeio/kdf --ignore-scripts
-```
+## Architecture
 
-Manual initialization later:
-
-```bash
-npx kdf init
-```
-
-`npx kdf init` uses the local package binary when `@kondeio/kdf` is already installed.
-
-Initialize a custom design directory:
-
-```bash
-KDF_DIR=./designs npx kdf init
-```
-
-## Generated Starter Structure
-
-Default init creates:
+Design tokens live in two places:
 
 ```text
 kdf/
@@ -173,100 +154,31 @@ kdf/
   konde.css
 ```
 
-Only `shared/`, `homepage.json`, `konde-server.css`, and `konde.css` are part of
-the generated starter. Additional page JSON files such as pricing, dashboard, or
-about examples live under `example/sample-pages/` as references and are not
-copied into a consumer project by install or `kdf init`.
+| File | Role |
+| --- | --- |
+| `kdf/shared/*.json` | reusable component and style defaults |
+| `kdf/<page>.json` | page-specific composition and overrides |
+| `kdf/konde-server.css` | critical first-paint CSS overrides |
+| `kdf/konde.css` | non-critical user CSS overrides |
 
-## Configuration
+Symbols:
 
-Next.js config, when using the optional Next.js plugin:
+| Symbol | Meaning | Example |
+| --- | --- | --- |
+| `$` | component identity metadata | `"$": "Button"` |
+| `className` | rendered class string | `"@button.cta shadow-xl"` |
+| `@` | shared style reference | `"@button.cta"` |
+| `$layout` | page section order and visibility | `["hero", "footer"]` |
+| `css` | CSS custom properties | `{ "--kdf-accent": "#4F46E5" }` |
 
-Default KDF directory (`./kdf`):
+`$` is metadata for agents and host tooling. The runtime accessor `d(path)`
+returns the resolved `className`, and `d.css(path)` returns the `css` object.
 
-```ts
-// next.config.ts
-import withKDF from "@kondeio/kdf/plugin";
+## JSON Token Forms
 
-export default withKDF()(nextConfig);
-```
+### Class string
 
-Custom KDF directory (`./my-design`):
-
-```ts
-// next.config.ts
-import withKDF from "@kondeio/kdf/plugin";
-
-export default withKDF({ dir: "./my-design" })(nextConfig);
-```
-
-Custom and absolute design directories are supported through `KDF_DIR`. The
-resolver does not expose a per-call `dir` option in `getDesign()`; use `KDF_DIR`
-as the runtime source of truth.
-
-## Custom Design Directory
-
-The default design directory is `./kdf`.
-
-For any Node/server-side runtime, set `KDF_DIR` before the process starts:
-
-```bash
-KDF_DIR=./designs npm run dev
-```
-
-```ts
-import { getDesign } from "@kondeio/kdf";
-
-const d = getDesign("homepage");
-```
-
-In Next.js, the optional plugin sets `KDF_DIR` through `next.config.ts`:
-
-```ts
-import withKDF from "@kondeio/kdf/plugin";
-
-export default withKDF({ dir: "./designs" })(nextConfig);
-```
-
-That makes KDF read:
-
-```text
-designs/
-  shared/
-  homepage.json
-  konde-server.css
-  konde.css
-```
-
-## CSS Framework Scanning
-
-If your styling framework generates CSS by scanning source files, make sure it scans KDF JSON files too. Otherwise class names stored in JSON may not be generated.
-
-Example for Tailwind v4:
-
-```css
-@import "tailwindcss";
-@source "../kdf/**/*.json";
-```
-
-Example for Tailwind v3:
-
-```ts
-export default {
-  content: [
-    "./src/**/*.{ts,tsx}",
-    "./kdf/**/*.json"
-  ]
-};
-```
-
-## JSON Model
-
-KDF supports three practical token forms.
-
-### String Token
-
-Use when a path only needs a class string:
+Use a string when a token only needs classes:
 
 ```json
 {
@@ -276,15 +188,13 @@ Use when a path only needs a class string:
 }
 ```
 
-Usage:
-
 ```tsx
 <section data-kdf="hero.wrapper" className={d("hero.wrapper")} />
 ```
 
-### Object Token
+### Object token
 
-Use when a token needs className plus metadata:
+Use an object when the token needs metadata, classes, or CSS custom properties:
 
 ```json
 {
@@ -292,14 +202,18 @@ Use when a token needs className plus metadata:
     "title": {
       "$": "h1",
       "className": "@typography.h1"
+    },
+    "cta-primary": {
+      "$": "Button",
+      "className": "@button.cta"
     }
   }
 }
 ```
 
-### CSS Custom Properties
+### CSS custom properties
 
-Use the `css` object for values not practical as class names:
+Use `css` when values should be applied as inline style variables:
 
 ```json
 {
@@ -307,14 +221,12 @@ Use the `css` object for values not practical as class names:
     "title": {
       "className": "text-3xl",
       "css": {
-        "--kdf-accent": "oklch(0.546 0.245 262)"
+        "--kdf-accent": "#4F46E5"
       }
     }
   }
 }
 ```
-
-Usage:
 
 ```tsx
 <h1
@@ -324,73 +236,84 @@ Usage:
 />
 ```
 
-## Symbols
-
-| Symbol | Meaning | Example |
-|--------|---------|---------|
-| `$` | Component identity | `"$": "Button"` |
-| `@` | Shared style reference | `"@button.cta"` |
-| `$layout` | Page section order and visibility | `["hero", "features", "footer"]` |
-
-`$` answers what to render.
-
-`@` answers where styling comes from.
-
-`$layout` answers which sections appear and in what order.
-
-## Reference Resolution
+## Shared References
 
 Shared references are written with `@`:
 
 ```json
 {
   "hero": {
-    "cta": "@button.cta"
+    "cta-primary": "@button.cta",
+    "cta-large": "@button.cta text-lg shadow-xl"
   }
 }
 ```
 
-This resolves from:
+`@button.cta` resolves from:
 
 ```text
 kdf/shared/button.json -> cta
 ```
 
-### Resolution cascade
+References can chain through other references. Resolution stops after a small
+depth limit to avoid loops.
 
-A `@component.key` ref is resolved in this order, first match wins:
+The component segment is validated. A ref like `@../../secret.value` is rejected
+instead of escaping the `shared/` directory.
 
-1. **Template shared** — `<KDF_DIR>/shared/<component>.json` → `key`
-2. **Root shared** — `<KDF_DIR>/../shared/<component>.json` → `key`
-   (one level above `KDF_DIR`; useful when multiple design directories share one
-   `shared/`, e.g. `designs/shared/` above `designs/lander/`). For a standalone
-   app with `kdf/` at the project root this points outside the project and is
-   simply skipped.
-3. **Page tokens** — the current page JSON itself (`refPart` lookup).
+## Multi-Level Shared Tokens
 
-The `<component>` segment is validated against `^[A-Za-z0-9_-]+$`; refs with path
-separators or `..` are rejected (no traversal outside `shared/`). `@refs` resolve
-recursively up to depth 5.
+KDF supports a shared-token cascade for apps with multiple design directories.
 
-References can be extended:
-
-```json
-{
-  "hero": {
-    "cta": "@button.cta shadow-xl text-lg"
-  }
-}
+```text
+designs/
+  shared/
+    button.json          <- fallback for all templates
+    typography.json
+  lander/
+    shared/
+      button.json        <- lander-only override
+    homepage.json
+  newlander/
+    homepage.json        <- uses root shared fallback
 ```
 
-Multiple references are supported:
+Resolution order for `@button.cta`:
 
-```json
-{
-  "hero": {
-    "login": "@button.base @button.ghost @button.sm"
-  }
-}
+1. `<KDF_DIR>/shared/button.json`
+2. `<KDF_DIR>/../shared/button.json`
+3. current page tokens
+
+This means a template can override only the parts it needs and inherit the rest.
+
+## Multi-Template Design
+
+Like i18n can switch languages, KDF can switch design templates.
+
+```text
+languages/en/       -> designs/lander/
+languages/id/       -> designs/newlander/
+activate language      activate design template
 ```
+
+```text
+designs/
+  lander/
+    shared/
+    homepage.json
+  newlander/
+    shared/
+    homepage.json
+```
+
+Same app, same components, same code. Point `KDF_DIR` to another design folder:
+
+```ts
+export default withKDF({ dir: "./designs/lander" })(nextConfig);
+```
+
+Switching templates should be a deliberate host-app decision. KDF provides the
+folder model and resolver behavior.
 
 ## Page Layout
 
@@ -407,12 +330,25 @@ Multiple references are supported:
 
 Rules:
 
-- section listed in `$layout` renders
-- section removed from `$layout` is hidden
+- sections listed in `$layout` render
+- sections missing from `$layout` are hidden by the host app
 - section order follows array order
-- section data can exist even if hidden
+- section token data can remain even when a section is hidden
 
-The application still decides how to render sections. KDF provides the design and order data.
+The application still decides how to render sections. KDF provides the design
+and order data.
+
+## Why Nested Structure Matters
+
+JSON nesting is functional, not just tidy.
+
+1. `$layout` uses top-level section keys for page order and visibility.
+2. Dot paths scope repeated names like `hero.title` and `footer.title`.
+3. `data-kdf` maps DOM nodes directly to JSON paths.
+4. Agents and scanners can locate the exact design source for an element.
+5. One section can be replaced without rewriting unrelated tokens.
+
+Nested JSON turns page structure into data.
 
 ## `data-kdf`
 
@@ -422,35 +358,134 @@ Every element using a KDF token must include the matching `data-kdf` path:
 <h1 data-kdf="hero.title" className={d("hero.title")}>
 ```
 
-This is mandatory for agent and tooling workflows because it allows:
+This enables:
 
 - DOM to JSON path mapping
 - Playwright assertions
-- visual editor targeting
 - scanner validation
-- future Konde Designer editing
+- agent review
+- visual tooling that targets the exact design token
 
-If an element uses `d("hero.title")` but lacks `data-kdf="hero.title"`, it should be treated as invalid KDF usage.
+If an element uses `d("hero.title")` but lacks
+`data-kdf="hero.title"`, treat it as invalid KDF usage.
+
+## Konde CSS Override Files
+
+KDF creates two CSS files during initialization. Both are user-owned. KDF never
+overwrites them after creation.
+
+| File | Intended loading | Purpose |
+| --- | --- | --- |
+| `konde-server.css` | imported by the app for first paint | critical CSS variables and no-FOUC overrides |
+| `konde.css` | loaded after framework/app CSS | non-critical tweaks, experiments, escape hatches |
+
+Examples:
+
+```css
+/* konde-server.css */
+:root { --kdf-primary: #4F46E5; }
+[data-kdf="hero.slider"] { display: none; }
+```
+
+```css
+/* konde.css */
+[data-kdf="hero.title"] { letter-spacing: -0.02em; }
+[data-kdf="hero.wrapper"] { gap: 3rem; }
+```
+
+The Next.js plugin exposes paths through environment values. It does not inject
+CSS automatically. The host app wires imports or links explicitly.
+
+## Color Definitions
+
+KDF JSON stores class names, not CSS engine internals. Color tokens can point to
+whatever the host styling system understands.
+
+Tailwind:
+
+```json
+{
+  "primary-text": "text-[#4F46E5]",
+  "brand-bg": "bg-[var(--kdf-primary)]"
+}
+```
+
+Bootstrap:
+
+```json
+{
+  "primary-text": "text-primary",
+  "cta": "btn btn-primary"
+}
+```
+
+Plain CSS:
+
+```json
+{
+  "primary-text": "kdf-text-primary"
+}
+```
+
+CSS variables belong in app CSS:
+
+```css
+:root { --kdf-primary: #4F46E5; }
+```
+
+Then JSON can reference them through framework-compatible classes:
+
+```json
+{
+  "title": "text-[var(--kdf-primary)]"
+}
+```
+
+## CSS Framework Scanning
+
+If a styling framework generates CSS by scanning source files, make it scan KDF
+JSON files too. Otherwise classes stored in JSON may not be generated.
+
+Tailwind v4:
+
+```css
+@import "tailwindcss";
+@source "../kdf/**/*.json";
+```
+
+Tailwind v3:
+
+```ts
+export default {
+  content: [
+    "./src/**/*.{ts,tsx}",
+    "./kdf/**/*.json"
+  ]
+};
+```
 
 ## Runtime API
 
-> **Server-only.** `getDesign()`, `d()`, and `d.css()` read JSON from disk via
-> Node `fs`. Use them in Next.js Server Components or server-rendered code.
-> They do not run in a Client Component (`"use client"`) — resolve on the server
-> and pass the className string down as a prop.
-
-### `getDesign(page, options?)`
+KDF core runs in Node/server-side JavaScript because it reads JSON from disk.
 
 ```ts
+import { getDesign, cn, clearKdfCache } from "@kondeio/kdf";
+
 const d = getDesign("homepage");
 ```
 
-Returns a design accessor:
+Accessor behavior:
 
 ```ts
-d("hero.title");      // className string
+d("hero.title");      // resolved className string
 d.css("hero.title");  // CSS custom properties object
 ```
+
+Server-only rule:
+
+- use `getDesign()` in server-rendered code
+- do not call it directly inside browser-only Client Components
+- resolve classes server-side and pass strings down when needed
 
 Cache options:
 
@@ -464,119 +499,46 @@ const d = getDesign("homepage", {
 Cache modes:
 
 ```text
-auto    default behavior
-always  use cache aggressively
+auto    production caches forever; development revalidates by mtime/size
+always  cache for the lifetime of the process
 none    bypass cache
 ```
 
-### `clearKdfCache()`
+Use `clearKdfCache()` for explicit invalidation in custom tooling.
+
+## Class Composition
+
+KDF includes small class composition helpers:
 
 ```ts
-clearKdfCache();
+import { cn, cx, composeClasses, dedupeClasses, createClassComposer } from "@kondeio/kdf";
 ```
 
-Use this for explicit invalidation in custom tooling or live editors.
+Use `cn()` when combining KDF tokens with conditional classes:
 
-### Class Composition
-
-```ts
-import {
-  cn,
-  cx,
-  composeClasses,
-  createClassComposer,
-  dedupeClasses
-} from "@kondeio/kdf";
-
-className={cn(d("button.base"), isActive && d("button.active"), className)}
+```tsx
+className={cn(d("button.base"), active && d("button.active"), className)}
 ```
 
-KDF ships a small, UI-library agnostic class composition layer:
+Helpers:
 
 - `cn()` joins conditional class values, drops falsy values, normalizes
   whitespace, and removes exact duplicate classes.
 - `cx()` is an alias of `cn()`.
-- `composeClasses()` is the same default composer with a more explicit name.
+- `composeClasses()` is the same default composer with an explicit name.
 - `dedupeClasses()` removes exact duplicates from an existing class string.
 - `createClassComposer({ merge })` creates a composer with an app-defined merge
   step.
 
-Default behavior is semantic-free. KDF does not try to understand colors,
-spacing, variants, framework utility groups, or component-library conventions.
-It only turns repeated exact classes into one stable class:
-
-```ts
-dedupeClasses("btn btn btn-primary");
-// "btn btn-primary"
-```
-
-If an app needs project-specific conflict resolution, inject that logic:
-
-```ts
-import { createClassComposer } from "@kondeio/kdf";
-
-export const cn = createClassComposer({
-  merge(className) {
-    return applyProjectClassRules(className);
-  }
-});
-```
-
-This keeps KDF neutral while still allowing each app to enforce its own class
-rules.
-
-## Cache Behavior
-
-KDF caches design JSON by default.
-
-In development, KDF revalidates with file `mtimeMs` and `size` checks so repeated `d()` calls do not create disk-read storms during HMR.
-
-Default dev cache window:
-
-```text
-250ms
-```
-
-Environment override:
-
-```bash
-KDF_CACHE_MAX_AGE_MS=500
-```
-
-## ESM and Dependencies
-
-KDF is ESM:
-
-```json
-{
-  "type": "module"
-}
-```
-
-Internal TypeScript source imports must emit Node-compatible ESM paths with `.js` extensions:
-
-```ts
-import { loadFile } from "./resolver.js";
-```
-
-The package depends on:
-
-```json
-{
-  "clsx": "^2.1.1"
-}
-```
-
-`clsx` must remain a real dependency (not peer-only) because KDF's class
-composition helpers use it at runtime. KDF intentionally does **not** depend on
-framework-specific class merge packages. Semantic conflict resolution is opt-in
-per consumer through `createClassComposer({ merge })`.
+KDF intentionally does not understand semantic utility conflicts. Apps that
+need Tailwind-specific or project-specific merging can inject their own rules.
 
 ## UI Library Compatibility
 
-KDF is UI-library agnostic because it stores classes and metadata, not component implementations.
+KDF is UI-library agnostic because it stores design tokens and metadata, not
+component implementations.
 
-shadcn:
+shadcn-style metadata:
 
 ```json
 {
@@ -605,58 +567,86 @@ Plain CSS:
 {
   "cta": {
     "$": "button",
-    "className": "btn btn-primary"
+    "className": "my-btn my-btn--primary"
   }
 }
 ```
 
-## Relationship to Component Libraries
+KDF gives the host app stable design data. The host app still owns actual
+component rendering.
 
-A component library says:
+## Full Page Layout Example
 
-```text
-This is a Button.
+KDF can describe a complete page structure:
+
+```json
+{
+  "$layout": ["hero", "section-a", "footer"],
+  "page": {
+    "wrapper": "flex min-h-screen"
+  },
+  "hero": {
+    "wrapper": "flex flex-col gap-8 lg:flex-row lg:items-center",
+    "image-wrapper": "w-full lg:w-1/2 order-1",
+    "content": "w-full lg:w-1/2 order-2",
+    "title": "@typography.h1",
+    "description": "mt-4 @typography.body",
+    "actions": "mt-6 flex gap-3",
+    "cta-primary": "@button.base @button.cta @button.md",
+    "cta-secondary": "@button.base @button.outline @button.md"
+  },
+  "section-a": {
+    "wrapper": "mt-16 border-t pt-16",
+    "title": "@typography.h2",
+    "content": "mt-4 @typography.body max-w-2xl"
+  },
+  "footer": {
+    "wrapper": "mt-16 border-t py-8",
+    "nav": "flex flex-wrap gap-6 justify-center",
+    "nav-item": "text-sm text-gray-500 hover:text-gray-700"
+  }
+}
 ```
 
-KDF says:
+Design changes that can happen in JSON:
 
-```text
-This is homepage.hero.cta-primary, rendered as Button, styled with @button.cta.
+- hide `section-a` by removing it from `$layout`
+- reorder page sections by changing `$layout`
+- swap hero image/content order with classes
+- change CTA style through shared `button.json`
+
+## Installation
+
+Install the package:
+
+```bash
+npm install @kondeio/kdf
+pnpm add @kondeio/kdf
+bun add @kondeio/kdf
 ```
 
-The difference is specificity. KDF maps a real screen element to a stable design key.
+The install initializer creates starter files only when the target `kdf/`
+folder does not already exist. Existing files are never overwritten.
 
-## Multi-template Direction
+Manual initialization:
 
-KDF can support multiple design directories by pointing config or environment to a different directory:
-
-```text
-designs/
-  lander/
-    shared/
-    homepage.json
-  newlander/
-    shared/
-    homepage.json
+```bash
+npx kdf init
 ```
 
-Same app, same components, different design JSON.
+Custom design directory:
 
-This is a direction for KDF usage and tooling. The current package foundation supports custom directories and absolute `KDF_DIR`; product-level template switching should be implemented intentionally by the host app.
+```bash
+KDF_DIR=./designs npx kdf init
+```
 
-## Konde Designer Direction
+Next.js config:
 
-Konde Designer is the future paid visual editor for KDF JSON.
+```ts
+import withKDF from "@kondeio/kdf/plugin";
 
-Expected flow:
-
-1. User clicks an element in the rendered app.
-2. Tool reads `data-kdf`.
-3. Tool opens the corresponding JSON path.
-4. User changes token values.
-5. App preview updates.
-
-KDF remains OSS. Konde Designer can be commercial.
+export default withKDF({ dir: "./designs" })(nextConfig);
+```
 
 ## License
 
