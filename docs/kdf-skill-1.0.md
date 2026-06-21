@@ -13,6 +13,32 @@ Build UI from KDF JSON instead of improvising styles in JSX.
 
 KDF is the design source of truth. Code should render the design. Agents should not invent spacing, colors, typography, or section order when a KDF token exists or should exist.
 
+## Install Behavior
+
+Check whether the host app already has `@kondeio/kdf` installed before adding it.
+
+Default install:
+
+```bash
+npm install @kondeio/kdf
+```
+
+This scaffolds starter `kdf/` through `postinstall` if the folder does not exist.
+
+Opt out:
+
+```bash
+npm install @kondeio/kdf --ignore-scripts
+```
+
+Manual init:
+
+```bash
+npx kdf init
+```
+
+Do not document fake custom npm flags such as `--noinit`. Use `--ignore-scripts`.
+
 ## Before You Edit
 
 1. Locate the relevant design file:
@@ -274,30 +300,6 @@ Rules:
 - hide sections missing from `$layout`
 - keep section token data even when hidden if it may be reused later
 
-## Install Behavior
-
-Default install:
-
-```bash
-npm install @kondeio/kdf
-```
-
-This scaffolds starter `kdf/` through `postinstall` if the folder does not exist.
-
-Opt out:
-
-```bash
-npm install @kondeio/kdf --ignore-scripts
-```
-
-Manual init:
-
-```bash
-npx kdf init
-```
-
-Do not document fake custom npm flags such as `--noinit`. Use `--ignore-scripts`.
-
 ## Cache Behavior
 
 KDF caches JSON by default.
@@ -392,7 +394,7 @@ If a user asks for a KDF UI change:
 5. Verify `data-kdf` coverage.
 6. Run the smallest relevant validation.
 
-If a user asks to publish KDF:
+If a user asks to publish KDF to npm:
 
 1. Confirm GitHub repo state.
 2. Confirm npm account/scope access.
@@ -402,4 +404,7 @@ If a user asks to publish KDF:
 6. Install packed tarball into a clean sample.
 7. Publish only after explicit approval.
 
-Never publish npm automatically without explicit user instruction.
+Git pushes to the KDF repository are normal code sync operations when the user
+asks for them. They are not npm publishing.
+
+Never publish to npm automatically without explicit user instruction.
