@@ -1,4 +1,4 @@
-# KDF Skill 1.0
+# KDF Skill
 
 Use this skill whenever you build, review, or modify UI that uses Konde Design Framework.
 

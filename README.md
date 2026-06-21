@@ -349,8 +349,8 @@ export default withKDF({ dir: "./my-design" })(nextConfig);
 
 ## Documentation and Skills
 
-- [`docs/kdf-doc-1.0.md`](./docs/kdf-doc-1.0.md) - KDF concept, architecture, conventions, and release notes.
-- [`docs/kdf-skill-1.0.md`](./docs/kdf-skill-1.0.md) - agent-facing implementation and review checklist.
+- [`docs/kdf-doc.md`](./docs/kdf-doc.md) - KDF concept, architecture, conventions, and operating model.
+- [`docs/kdf-skill.md`](./docs/kdf-skill.md) - agent-facing implementation and review checklist.
 
 ## Contributing
 

@@ -1,11 +1,7 @@
-# Konde Design Framework 1.0
+# Konde Design Framework
 
-Document version: 1.0
-Package version: 0.1.0
 Package: `@kondeio/kdf`
-Repository: `https://github.com/KondeIO/kdf`
 License: MIT
-Status: private GitHub repo prepared, npm publish deferred
 
 ## Positioning
 
@@ -51,7 +47,7 @@ The package `README.md` should stay concise and technical:
 - key API notes
 - license
 
-This document is the longer source of truth for the concept, conventions, operating model, and agent behavior.
+This document is the longer source of truth for the concept, conventions, operating model, and agent-assisted implementation behavior.
 
 ## Problem
 
@@ -92,10 +88,10 @@ The class still renders as normal CSS. The difference is the source of truth.
 
 ## Core Philosophy
 
-- User controls design.
-- Agent reads design.
+- User owns design direction and approval.
+- Agent reads KDF JSON and implements the UI from it.
 - JSON is the shared language.
-- Code renders the UI.
+- Code renders the approved design.
 - `data-kdf` maps DOM elements back to exact JSON paths.
 - KDF should reduce chat iteration, not create a new design bureaucracy.
 
@@ -181,16 +177,6 @@ Only `shared/`, `homepage.json`, `konde-server.css`, and `konde.css` are part of
 the generated starter. Additional page JSON files such as pricing, dashboard, or
 about examples live under `example/sample-pages/` as references and are not
 copied into a consumer project by install or `kdf init`.
-
-The npm package intentionally includes:
-
-```json
-{
-  "files": ["dist", "kdf", "example"]
-}
-```
-
-The package should not include local `node_modules`, local tarballs, or OS noise like `.DS_Store`.
 
 ## Configuration
 
@@ -376,10 +362,10 @@ A `@component.key` ref is resolved in this order, first match wins:
 
 1. **Template shared** — `<KDF_DIR>/shared/<component>.json` → `key`
 2. **Root shared** — `<KDF_DIR>/../shared/<component>.json` → `key`
-   (one level above `KDF_DIR`; the monorepo convention where multiple templates
-   share one `shared/`, e.g. `designs/shared/` above `designs/lander/`). For a
-   standalone consumer with `kdf/` at the project root this points outside the
-   project and is simply skipped.
+   (one level above `KDF_DIR`; useful when multiple design directories share one
+   `shared/`, e.g. `designs/shared/` above `designs/lander/`). For a standalone
+   app with `kdf/` at the project root this points outside the project and is
+   simply skipped.
 3. **Page tokens** — the current page JSON itself (`refPart` lookup).
 
 The `<component>` segment is validated against `^[A-Za-z0-9_-]+$`; refs with path
@@ -557,8 +543,6 @@ Environment override:
 KDF_CACHE_MAX_AGE_MS=500
 ```
 
-This was added after the website dev server hit repeated file reads through symlinked KDF usage.
-
 ## ESM and Dependencies
 
 KDF is ESM:
@@ -673,37 +657,6 @@ Expected flow:
 5. App preview updates.
 
 KDF remains OSS. Konde Designer can be commercial.
-
-## Release State
-
-Current private release state:
-
-- KS monorepo contains the source at `/Volumes/CLOUD/server/kdf`.
-- Dedicated GitHub repo is `https://github.com/KondeIO/kdf`.
-- Private repo initial commit is `7f5521f chore: initial KDF package`.
-- npm package is not published yet.
-
-Before npm publish:
-
-- decide long-term `dist/` policy
-- add CI for build/typecheck/test
-- document release process
-- run clean package install test
-- run packed tarball test in a sample app
-- verify package page rendering after publish
-
-## Recommended Repo Policy
-
-During private review, tracking `dist/` is acceptable because it makes GitHub direct installs easier.
-
-For public OSS, the preferred long-term model is:
-
-- source is authoritative
-- CI builds before publish
-- npm package includes `dist`
-- repo may avoid committed build output unless GitHub direct install is required
-
-This remains an open decision.
 
 ## License
 
