@@ -349,19 +349,9 @@ Use this when reviewing code written by another agent.
 - [ ] KDF JSON remains valid JSON.
 - [ ] Shared refs point to existing shared token files.
 - [ ] `@` refs are not used for business logic.
-- [ ] `postinstall` behavior is documented as intentional.
-- [ ] No non-English or informal comments are introduced into public KDF package source.
+- [ ] No non-English or informal comments are introduced into user-facing app source.
 
 ## Validation Commands
-
-From the KDF package root:
-
-```bash
-bun run build
-bun run typecheck
-bun run test
-npm pack --dry-run --json
-```
 
 From the host app:
 
@@ -369,19 +359,8 @@ From the host app:
 bun run build
 ```
 
-When testing package install behavior:
-
-```bash
-npm install ../kondeio-kdf-0.1.0.tgz
-npm install ../kondeio-kdf-0.1.0.tgz --ignore-scripts
-npx kdf init
-```
-
-Expected:
-
-- default install creates starter `kdf/`
-- `--ignore-scripts` does not create starter files
-- `npx kdf init` can initialize manually later
+Use the host app's existing lint, typecheck, test, and build commands when they
+exist.
 
 ## Agent Behavior
 
@@ -393,19 +372,3 @@ If a user asks for a KDF UI change:
 4. Update TSX only when structure, behavior, or data flow changes.
 5. Verify `data-kdf` coverage.
 6. Run the smallest relevant validation.
-
-If a user asks to publish KDF to npm:
-
-1. Confirm GitHub repo state.
-2. Confirm npm account/scope access.
-3. Confirm package metadata.
-4. Confirm README and license.
-5. Run pack dry-run.
-6. Install packed tarball into a clean sample.
-7. Publish only after explicit approval.
-
-Repository push/sync is outside this skill. Only push KDF repository changes
-when the user explicitly asks for that repository operation, and never force-push
-from this skill.
-
-Never publish to npm automatically without explicit user instruction.
