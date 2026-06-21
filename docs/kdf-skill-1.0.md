@@ -404,7 +404,8 @@ If a user asks to publish KDF to npm:
 6. Install packed tarball into a clean sample.
 7. Publish only after explicit approval.
 
-Git pushes to the KDF repository are normal code sync operations when the user
-asks for them. They are not npm publishing.
+Repository push/sync is outside this skill. Only push KDF repository changes
+when the user explicitly asks for that repository operation, and never force-push
+from this skill.
 
 Never publish to npm automatically without explicit user instruction.
