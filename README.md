@@ -351,7 +351,6 @@ export default withKDF({ dir: "./my-design" })(nextConfig);
 
 - [`docs/kdf-doc-1.0.md`](./docs/kdf-doc-1.0.md) - KDF concept, architecture, conventions, and release notes.
 - [`docs/kdf-skill-1.0.md`](./docs/kdf-skill-1.0.md) - agent-facing implementation and review checklist.
-- [`docs/license.md`](./docs/license.md) - license rationale, alternatives considered, and publishing requirements.
 
 ## Contributing
 
@@ -372,4 +371,4 @@ See [CHANGELOG.md](./CHANGELOG.md).
 
 ## License
 
-MIT. See `LICENSE` for the full license text and `docs/license.md` for the license decision notes.
+MIT. See [`LICENSE`](./LICENSE) for the full license text.

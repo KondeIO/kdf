@@ -705,15 +705,6 @@ For public OSS, the preferred long-term model is:
 
 This remains an open decision.
 
-## License Decision
+## License
 
-KDF uses MIT.
-
-Reason:
-
-- low adoption friction
-- compatible with commercial projects
-- familiar to npm users
-- simple for external contributors
-
-See `license.md` for the license rationale and alternatives.
+KDF uses MIT. The root `LICENSE` file is the source of truth.
