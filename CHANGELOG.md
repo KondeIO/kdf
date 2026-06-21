@@ -20,7 +20,7 @@ Initial public release candidate.
 - `dedupeClasses()`, `composeClasses()`, `cx()`, and
   `createClassComposer({ merge })`.
 - Documented the **server-only** constraint (resolver uses Node `fs`) across
-  README, `docs/kdf-doc-1.0.md`, and `docs/kdf-skill-1.0.md`, with the
+  README, `docs/kdf-doc.md`, and `docs/kdf-skill.md`, with the
   resolve-on-server / pass-className-as-prop pattern.
 - `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`.
 
