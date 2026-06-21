@@ -7,7 +7,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "@kondeio/kdf": "dist/cli.js",
     "kdf": "dist/cli.js"
   },
   "exports": {
