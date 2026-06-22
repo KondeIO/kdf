@@ -3,6 +3,15 @@
 All notable changes to KDF are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com); versions follow semver.
 
+## [0.1.1] - 2026-06-22
+
+### Changed
+- Documentation now keeps the KDF install flow npm-focused: default install is
+  `npm install @kondeio/kdf`, skip scaffolding with `--ignore-scripts` or
+  `KDF_SKIP_INIT=1`, and run manual initialization with
+  `npm exec -- kdf init`.
+- CLI help now shows the npm-based manual initialization command.
+
 ## [0.1.0] - 2026-06-18
 
 Initial public release candidate.

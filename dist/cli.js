@@ -52,7 +52,7 @@ if (!command || !commands[command]) {
     console.log("  init       Scaffold kdf/ folder + konde.css");
     console.log("");
     console.log("Usage:");
-    console.log("  npx @kondeio/kdf init");
+    console.log("  npm exec -- kdf init");
     process.exit(command ? 1 : 0);
 }
 commands[command]();

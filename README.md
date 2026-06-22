@@ -73,16 +73,16 @@ npm install @kondeio/kdf --ignore-scripts
 Run initialization manually later:
 
 ```bash
-npx kdf init
+npm exec -- kdf init
 ```
 
-`npx kdf init` uses the local package binary when `@kondeio/kdf` is already
+`npm exec -- kdf init` uses the local package binary when `@kondeio/kdf` is already
 installed in the project.
 
 Initialize a custom design directory:
 
 ```bash
-KDF_DIR=./designs npx kdf init
+KDF_DIR=./designs npm exec -- kdf init
 ```
 
 ## File Structure

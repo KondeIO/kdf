@@ -37,7 +37,7 @@ KDF_SKIP_INIT=1 npm install @kondeio/kdf
 You can scaffold manually later with:
 
 ```bash
-npx kdf init
+npm exec -- kdf init
 ```
 
 ## Reference resolution safety

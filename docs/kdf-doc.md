@@ -631,13 +631,13 @@ folder does not already exist. Existing files are never overwritten.
 Manual initialization:
 
 ```bash
-npx kdf init
+npm exec -- kdf init
 ```
 
 Custom design directory:
 
 ```bash
-KDF_DIR=./designs npx kdf init
+KDF_DIR=./designs npm exec -- kdf init
 ```
 
 Next.js config:

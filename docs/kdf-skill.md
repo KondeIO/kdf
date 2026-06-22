@@ -34,7 +34,7 @@ npm install @kondeio/kdf --ignore-scripts
 Manual init:
 
 ```bash
-npx kdf init
+npm exec -- kdf init
 ```
 
 Do not document fake custom npm flags such as `--noinit`. Use `--ignore-scripts`.
