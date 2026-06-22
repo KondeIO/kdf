@@ -1,6 +1,6 @@
 {
   "name": "@kondeio/kdf",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Agent-first design consistency for Node-powered web apps. KDF gives AI agents a JSON source of truth for consistent UI.",
   "license": "MIT",
   "type": "module",
