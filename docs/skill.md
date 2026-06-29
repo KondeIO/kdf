@@ -3,8 +3,8 @@
 Use this skill whenever you build, review, or modify UI that uses Konde Design Framework.
 
 Package: `@kondeio/kdf`
-Runtime target: Node/server-side JavaScript. Tested with Next.js, Astro, and Hono.
-Primary API: `getDesign`, `cn`, `cx`, `composeClasses`, `dedupeClasses`, `createClassComposer`, `clearKdfCache`
+Runtime target: Node/server-side JavaScript plus edge/serverless builds with imported JSON. Tested with Next.js, Astro, Hono, and Cloudflare Workers.
+Primary API: `createDesign`, `getDesign`, `cn`, `cx`, `composeClasses`, `dedupeClasses`, `createClassComposer`, `clearKdfCache`
 Required convention: every `d()` usage must have matching `data-kdf`
 
 ## Goal
@@ -50,7 +50,26 @@ kdf/shared/*.json
 
 2. Locate the relevant UI component or page.
 
-3. Confirm package import:
+3. Confirm package import.
+
+For bundled SSR/edge runtimes such as Astro SSR or Cloudflare Workers, prefer
+imported JSON:
+
+```ts
+import { createDesign, cn } from "@kondeio/kdf";
+import pageTokens from "../kdf/homepage.json";
+import buttonTokens from "../kdf/shared/button.json";
+
+const d = createDesign(pageTokens, { button: buttonTokens });
+```
+
+If the runtime rejects Node built-ins entirely, use:
+
+```ts
+import { createDesign, cn } from "@kondeio/kdf/edge";
+```
+
+For Node/server-only apps that intentionally read files at runtime:
 
 ```ts
 import { getDesign, cn } from "@kondeio/kdf";
@@ -62,6 +81,12 @@ import { getDesign, cn } from "@kondeio/kdf";
 const d = getDesign("homepage");
 ```
 
+or:
+
+```ts
+const d = createDesign(pageTokens, { button: buttonTokens });
+```
+
 5. Confirm the styling framework scans KDF JSON if it generates CSS by scanning source files:
 
 ```css
@@ -71,6 +96,15 @@ const d = getDesign("homepage");
 or equivalent framework/source scanning config.
 
 ## Non-negotiable Rules
+
+### 0. Pick the Right Runtime API
+
+Use `createDesign(importedJson, shared)` for Astro SSR, Cloudflare Workers, and
+other bundled edge/serverless deployments. Do not pass local absolute paths such
+as `/Volumes/.../designs/homepage.json` into deployed code.
+
+Use `getDesign(page)` only when runtime filesystem reads from `kdf/*.json` are
+intentional and the target runtime is Node/server.
 
 ### 1. Do Not Guess Design
 
@@ -325,8 +359,8 @@ clearKdfCache();
 
 Use this checklist before finishing KDF-related UI work.
 
-- [ ] Page imports `getDesign` from `@kondeio/kdf`.
-- [ ] Page creates one accessor per design page, for example `getDesign("homepage")`.
+- [ ] Page imports the correct runtime API: `createDesign` for imported JSON/edge, `getDesign` for Node file mode.
+- [ ] Page creates one accessor per design page, for example `createDesign(pageTokens, sharedTokens)` or `getDesign("homepage")`.
 - [ ] Every `d()` usage has matching `data-kdf`.
 - [ ] Shared repeated styles live in `kdf/shared`.
 - [ ] One-off page styles live in `kdf/<page>.json`.
@@ -347,7 +381,7 @@ Use this when reviewing code written by another agent.
 - [ ] `data-kdf` values match the token paths exactly.
 - [ ] No design drift through arbitrary inline styling classes.
 - [ ] KDF JSON remains valid JSON.
-- [ ] Shared refs point to existing shared token files.
+- [ ] Shared refs point to existing shared token files or imported shared token objects.
 - [ ] `@` refs are not used for business logic.
 - [ ] No non-English or informal comments are introduced into user-facing app source.
 

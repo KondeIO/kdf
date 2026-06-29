@@ -35,21 +35,28 @@ not a CSS engine.
 
 ## Runtime Support
 
-KDF core runs in Node/server-side JavaScript environments because it reads JSON
-from disk with Node `fs`.
+KDF has two runtime modes:
 
-- Works with server-rendered Next.js, Astro, Hono, or similar Node runtimes.
+- `createDesign(tokens, shared)` uses JSON objects imported by the host app.
+  This is the preferred mode for Astro, Next.js, Hono, Cloudflare Workers, and
+  other edge/serverless runtimes because bundlers can see and include the JSON.
+- `getDesign(page)` reads `kdf/<page>.json` from disk with Node `fs`. This is
+  convenient for Node/server apps and local tooling, but it is not the right
+  API for edge runtimes that do not have your local filesystem.
+
+- Works with server-rendered Next.js, Astro, Hono, Cloudflare Workers, or similar runtimes.
 - The included `@kondeio/kdf/plugin` export is the official Next.js integration.
 - Next.js plugin target: App Router, Next.js 14+ (`next >=14`).
-- `getDesign()`, `d()`, and `d.css()` are server-only. Browser/client
-  components cannot call them directly; resolve classes server-side and pass
-  class names down when needed.
+- `getDesign()` is server-only. Browser/client components should use resolved
+  class strings from a server boundary or use imported JSON with `createDesign()`
+  when the bundler/runtime supports it.
 
 | Framework | Status | How KDF is used |
 | --- | --- | --- |
-| Next.js | Tested | Core API in server-rendered code, plus the official `@kondeio/kdf/plugin` integration. |
-| Astro | Tested | Core API in server-rendered code. |
-| Hono | Tested | Core API in server handlers. |
+| Next.js | Tested | `createDesign()` with imported JSON, or `getDesign()` in Node/server-rendered code plus the optional plugin. |
+| Astro | Tested | `createDesign()` with imported JSON for SSR/edge builds. |
+| Hono | Tested | `createDesign()` with imported JSON in handlers, or `getDesign()` in Node handlers. |
+| Cloudflare Workers | Supported | `createDesign()` with imported JSON. Do not pass local absolute file paths. |
 
 ## Install
 
@@ -172,6 +179,41 @@ Example token:
 
 ## Usage
 
+### Imported JSON API
+
+Use `createDesign()` when the app is bundled for Astro, Next.js, Hono, or
+Cloudflare Workers:
+
+```tsx
+import { createDesign } from "@kondeio/kdf";
+import homepageTokens from "../kdf/homepage.json";
+import buttonTokens from "../kdf/shared/button.json";
+import typographyTokens from "../kdf/shared/typography.json";
+
+const d = createDesign(homepageTokens, {
+  button: buttonTokens,
+  typography: typographyTokens,
+});
+
+<h1 data-kdf="hero.title" className={d("hero.title")}>
+  {t("hero.headline")}
+</h1>
+```
+
+This makes the JSON a normal build dependency. The bundler includes it in the
+output instead of KDF trying to read a machine-local path at runtime.
+
+If a runtime or bundler rejects Node built-ins entirely, import the pure entry:
+
+```ts
+import { createDesign } from "@kondeio/kdf/edge";
+```
+
+### File API
+
+Use `getDesign()` in Node/server environments where reading from `kdf/*.json` at
+runtime is intentional:
+
 ```tsx
 import { getDesign } from "@kondeio/kdf";
 
@@ -235,11 +277,11 @@ const cn = createClassComposer({
 
 ## Server-only
 
-`getDesign()`, `d()`, and `d.css()` read JSON from disk via Node `fs`, so they
-run on the **server only**: Next.js Server Components, Astro server rendering,
-Hono handlers, or equivalent Node/server-rendered code. They do **not** work
-inside browser-only code or a Next.js Client Component (`"use client"`), which
-has no filesystem.
+`getDesign()` reads JSON from disk via Node `fs`, so it runs on the **server
+only**: Next.js Server Components, Astro Node server rendering, Hono Node
+handlers, or equivalent Node/server-rendered code. It does **not** work inside
+browser-only code or a Next.js Client Component (`"use client"`), which has no
+filesystem.
 
 For client components, resolve on the server and pass the resulting className
 string down as a prop:
@@ -249,6 +291,9 @@ string down as a prop:
 const d = getDesign("homepage");
 return <ClientThing className={d("hero.cta")} />;
 ```
+
+For edge/serverless deploys, prefer `createDesign(importedJson, shared)` so the
+tokens are bundled as code/data instead of looked up from a runtime path.
 
 ## References
 
@@ -283,8 +328,8 @@ Playwright checks.
 
 ## Cache Behavior
 
-KDF caches design JSON files by default. In development it revalidates with
-file `mtime`/`size` checks so repeated `d()` calls do not create disk-read
+`getDesign()` caches design JSON files by default. In development it revalidates
+with file `mtime`/`size` checks so repeated `d()` calls do not create disk-read
 storms during HMR.
 
 ```tsx

@@ -4,11 +4,13 @@ import {
   clearKdfCache,
   cn,
   composeClasses,
+  createDesign,
   createClassComposer,
   cx,
   dedupeClasses,
   getDesign,
 } from "./src/index";
+import { createDesign as createEdgeDesign } from "./src/edge";
 import { loadFile } from "./src/resolver";
 
 let pass = 0;
@@ -91,6 +93,48 @@ assert("nonexistent returns empty", d("does.not.exist"), "");
 console.log("\ncss()");
 const css = d.css("hero.title");
 assert("no css on hero.title", Object.keys(css).length, 0);
+
+// ── Test: createDesign from imported JSON tokens ──
+console.log("\ncreateDesign object API");
+const objectDesign = createDesign(
+  {
+    hero: {
+      wrapper: "mx-auto",
+      cta: "@button.base @button.primary px-4",
+      card: "@card.base",
+      local: "@hero.wrapper text-lg",
+      title: {
+        className: "@typography.h1",
+        css: { "--kdf-accent": "#2563eb" },
+      },
+    },
+  },
+  {
+    button: {
+      base: "inline-flex",
+      primary: "bg-blue-600 text-white",
+    },
+    card: {
+      base: {
+        className: "rounded-lg border",
+      },
+    },
+    typography: {
+      h1: "text-4xl font-semibold",
+    },
+  },
+);
+assert("createDesign plain token", objectDesign("hero.wrapper"), "mx-auto");
+assert("createDesign resolves shared refs", objectDesign("hero.cta"), "inline-flex bg-blue-600 text-white px-4");
+assert("createDesign resolves object shared refs", objectDesign("hero.card"), "rounded-lg border");
+assert("createDesign resolves page refs", objectDesign("hero.local"), "mx-auto text-lg");
+assert("createDesign resolves css", objectDesign.css("hero.title")["--kdf-accent"], "#2563eb");
+
+const edgeDesign = createEdgeDesign(
+  { hero: { cta: "@button.base" } },
+  { button: { base: "inline-flex" } },
+);
+assert("edge export resolves shared refs", edgeDesign("hero.cta"), "inline-flex");
 
 // ── Test: pricing page ──
 console.log("\npricing page");

@@ -18,6 +18,8 @@ export interface DesignTokenFile {
 export interface DesignTokenGroup {
     [key: string]: DesignTokenValue | DesignTokenGroup;
 }
+/** Shared design token objects keyed by @ref component name, e.g. { button } */
+export type DesignSharedTokens = Record<string, DesignTokenFile | null | undefined>;
 /** Resolved design accessor for a page */
 export interface DesignAccessor {
     /** Get className for a dot-path: d("hero.title") */

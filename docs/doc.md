@@ -466,7 +466,37 @@ export default {
 
 ## Runtime API
 
-KDF core runs in Node/server-side JavaScript because it reads JSON from disk.
+KDF has two runtime APIs.
+
+### Imported JSON / Edge-Safe API
+
+Use `createDesign()` when the host app is built by Vite, Astro, Next.js, Hono,
+or Cloudflare Workers:
+
+```ts
+import { createDesign, cn } from "@kondeio/kdf";
+import homepageTokens from "../kdf/homepage.json";
+import buttonTokens from "../kdf/shared/button.json";
+import typographyTokens from "../kdf/shared/typography.json";
+
+const d = createDesign(homepageTokens, {
+  button: buttonTokens,
+  typography: typographyTokens,
+});
+```
+
+This API does not read design JSON from a path. The app imports JSON explicitly,
+so the bundler can include the token files in the deployment artifact.
+
+For runtimes that reject Node built-ins completely, use the pure subpath:
+
+```ts
+import { createDesign, cn } from "@kondeio/kdf/edge";
+```
+
+### Node File API
+
+Use `getDesign()` when runtime filesystem reads are intentional:
 
 ```ts
 import { getDesign, cn, clearKdfCache } from "@kondeio/kdf";
@@ -481,11 +511,12 @@ d("hero.title");      // resolved className string
 d.css("hero.title");  // CSS custom properties object
 ```
 
-Server-only rule:
+Server-only rule for `getDesign()`:
 
-- use `getDesign()` in server-rendered code
+- use `getDesign()` in Node/server-rendered code
 - do not call it directly inside browser-only Client Components
 - resolve classes server-side and pass strings down when needed
+- use `createDesign(importedJson, shared)` for edge/serverless builds
 
 Cache options:
 

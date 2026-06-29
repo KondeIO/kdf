@@ -1,6 +1,10 @@
 import type { DesignTokenFile, GetDesignOptions, KdfCacheMode } from "./types.js";
 import { readFileSync, statSync } from "fs";
 import { isAbsolute, join } from "path";
+import {
+  resolveClassName as resolveClassNameFromTokens,
+  resolveCSS,
+} from "./create-design.js";
 
 /** Returns KDF root path — reads env at call time, not module load time */
 function getKdfRoot(): string {
@@ -100,7 +104,6 @@ function loadFileAbsolute(filePath: string, options?: GetDesignOptions): DesignT
   return loadJsonFile(filePath, options);
 }
 
-/** Get value from nested object by dot-path */
 function getByPath(obj: Record<string, unknown>, path: string): unknown {
   return path.split(".").reduce<unknown>((acc, key) => {
     if (acc && typeof acc === "object" && key in (acc as Record<string, unknown>)) {
@@ -110,90 +113,21 @@ function getByPath(obj: Record<string, unknown>, path: string): unknown {
   }, obj);
 }
 
-/**
- * Resolve a single @reference: "@button.cta"
- * @button.cta -> load shared/button.json -> key "cta"
- */
-function resolveSingleRef(
-  ref: string,
-  pageTokens: DesignTokenFile | null,
-  depth: number,
-  options?: GetDesignOptions,
-): string {
-  if (depth > 5) return "";
-
-  const refPart = ref.slice(1); // remove @
-  const dotIdx = refPart.indexOf(".");
-  const component = dotIdx > 0 ? refPart.slice(0, dotIdx) : refPart;
-  const key = dotIdx > 0 ? refPart.slice(dotIdx + 1) : "";
-
-  // Reject path-traversal in the component name: it becomes part of a file path
-  // (shared/<component>.json). A ref like "@../../secret.x" must never escape the
-  // shared/ folder. Allow only safe filename chars.
-  if (!/^[A-Za-z0-9_-]+$/.test(component)) {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn(`[kdf] ignoring unsafe @ref component: "${component}"`);
-    }
-    return "";
-  }
-
-  // Load shared/<component>.json — cascade: template shared → root shared
-  let resolved: unknown = undefined;
-
+function resolveFileRef(component: string, key: string, options?: GetDesignOptions): unknown {
   // 1. Template-specific shared (e.g., designs/lander/shared/button.json)
   const templateShared = loadFile(`shared/${component}`, options);
-  if (key && templateShared) {
-    resolved = getByPath(templateShared as Record<string, unknown>, key);
+  if (templateShared) {
+    const resolved = getByPath(templateShared as Record<string, unknown>, key);
+    if (resolved !== undefined) return resolved;
   }
 
   // 2. Root shared fallback (e.g., designs/shared/button.json)
-  if (resolved === undefined && key) {
-    const rootShared = loadFileAbsolute(join(getKdfRoot(), "..", "shared", `${component}.json`), options);
-    if (rootShared) {
-      resolved = getByPath(rootShared as Record<string, unknown>, key);
-    }
+  const rootShared = loadFileAbsolute(join(getKdfRoot(), "..", "shared", `${component}.json`), options);
+  if (rootShared) {
+    return getByPath(rootShared as Record<string, unknown>, key);
   }
 
-  // 3. Fallback: check page-level tokens
-  if (resolved === undefined && pageTokens) {
-    resolved = getByPath(pageTokens as Record<string, unknown>, refPart);
-  }
-
-  if (typeof resolved === "string") {
-    // Resolved value might itself contain @refs
-    return resolveTokenString(resolved, pageTokens, depth + 1, options);
-  }
-  if (resolved && typeof resolved === "object" && "className" in resolved) {
-    const cn = (resolved as { className: string }).className;
-    return resolveTokenString(cn, pageTokens, depth + 1, options);
-  }
-  return "";
-}
-
-/**
- * Resolve a token string that may contain multiple @refs and plain classes.
- * Examples:
- *   "@button.cta"                         -> resolves single ref
- *   "@button.cta shadow-xl"               -> resolves ref + appends classes
- *   "@button.base @button.ghost @button.sm" -> resolves all three refs
- */
-function resolveTokenString(
-  value: string,
-  pageTokens: DesignTokenFile | null,
-  depth = 0,
-  options?: GetDesignOptions,
-): string {
-  if (depth > 5) return value;
-
-  const parts = value.split(/\s+/).filter(Boolean);
-  const resolved = parts.map((part) => {
-    if (part.startsWith("@")) {
-      return resolveSingleRef(part, pageTokens, depth, options);
-    }
-    return part;
-  });
-
-  return resolved.filter(Boolean).join(" ");
+  return undefined;
 }
 
 /** Resolve className for a token path.
@@ -203,33 +137,10 @@ export function resolveClassName(
   pageTokens: DesignTokenFile | null,
   options?: GetDesignOptions,
 ): string {
-  const val: unknown = pageTokens
-    ? getByPath(pageTokens as Record<string, unknown>, path)
-    : undefined;
-  if (val === undefined) return "";
-
-  if (typeof val === "string") {
-    return resolveTokenString(val, pageTokens, 0, options);
-  }
-  if (typeof val === "object" && val && "className" in val) {
-    const cn = (val as { className: string }).className;
-    return resolveTokenString(cn, pageTokens, 0, options);
-  }
-  return "";
-}
-
-/** Resolve CSS custom properties for a token path */
-export function resolveCSS(
-  path: string,
-  pageTokens: DesignTokenFile | null,
-): Record<string, string> {
-  const val: unknown = pageTokens
-    ? getByPath(pageTokens as Record<string, unknown>, path)
-    : undefined;
-  if (val && typeof val === "object" && "css" in val) {
-    return (val as { css: Record<string, string> }).css;
-  }
-  return {};
+  return resolveClassNameFromTokens(path, pageTokens, {
+    resolveRef: (component, key) => resolveFileRef(component, key, options),
+  });
 }
 
 export { loadFile, getKdfRoot };
+export { resolveCSS };

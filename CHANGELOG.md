@@ -3,6 +3,23 @@
 All notable changes to KDF are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com); versions follow semver.
 
+## [0.1.3] - 2026-06-29
+
+### Added
+- Added `createDesign(pageTokens, shared)` for imported JSON token objects. This
+  is the preferred API for Astro SSR, Hono, Next.js, Cloudflare Workers, and
+  other bundled runtimes because JSON files become build dependencies instead of
+  runtime filesystem paths.
+- Added the pure `@kondeio/kdf/edge` export for runtimes that reject Node
+  built-ins entirely.
+- Added `DesignSharedTokens` type for shared token maps such as
+  `{ button: buttonTokens }`.
+
+### Changed
+- Documentation now distinguishes the Node file API (`getDesign(page)`) from the
+  imported JSON API (`createDesign(tokens, shared)`), including Cloudflare
+  Workers guidance.
+
 ## [0.1.2] - 2026-06-22
 
 ### Changed
